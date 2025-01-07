@@ -39,6 +39,7 @@ namespace Game.Classes
 
             RealGrid = (int[,])MainGrid.Clone();
             ApplyDifficulty(RealGrid, level);
+            
             InitialGrid = (int[,])RealGrid.Clone();
         }
 

@@ -104,7 +104,11 @@ namespace Game.Managers
             else
             {
                 _colorThemeManager.ChangingColorTheme -= UpdateColors;
-                InputField.onValueChanged.RemoveListener(OnValueChanged);
+                
+                if (OnValueChanged != null)
+                {
+                    InputField.onValueChanged.RemoveListener(OnValueChanged);
+                }
             }
         }
 
@@ -156,7 +160,7 @@ namespace Game.Managers
             {
                 InputField.onValueChanged.RemoveListener(OnValueChanged);
             }
-            
+
             OnValueChanged = unityAction;
             InputField.onValueChanged.AddListener(OnValueChanged);
         }
@@ -164,7 +168,6 @@ namespace Game.Managers
         public void SetActiveVisibilityAnimation(bool value) => animator.SetBool(ANIM_VISIBILITY, value);
 
         public void SetUpdateColors(Action action) => UpdateColors = action;
-        public void SetCell(Cell cell) => Cell = cell;
 
         public void SetText(string value) => inputField.SetText(value == "0" ? "" : value);
         public void SetTransparencyColorText(float value) => Text.SetTransparency(value); // Для анимации Visibility

@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using Game.Managers;
 using Help.UI;
 using Game.Classes;
+using System;
+using UnityEngine.Events;
 
 namespace Game.Panels
 {
@@ -11,7 +13,7 @@ namespace Game.Panels
         #region CONSTANTS
 
         private const int DEFAULT_CANVAS_SORTING_ORDER = 0;
-        private const int ACTIVE_CANVAS_SORTING_ORDER = 4;
+        private const int ACTIVE_CANVAS_SORTING_ORDER = 3;
         private const string VICTORY_TEXT = "Победа!";
         private const string DEFEAT_TEXT = "Поражение";
         private const string RESTART_BUTTON_TEXT = "Перезапустить";
@@ -22,18 +24,29 @@ namespace Game.Panels
 
         #endregion
 
+        #region EVENTS
+
+        private UnityAction OnClickFirstBottomButton;
+        private UnityAction OnClickSecondBottomButton;
+
+        #endregion
+
         #region CORE
 
         [Header("Core")]
+        [SerializeField] private Canvas newGamePanelCanvas;
+        [SerializeField] private Image[] blockers;
+
+        [Header("Panel")]
         [SerializeField] private Canvas canvas;
-        [SerializeField] private Image blocker;
         [SerializeField] private Text topText;
         [SerializeField] private Text middleText;
+        [SerializeField] private Button firstBottomButton;
         [SerializeField] private Button secondBottomButton;
         [SerializeField] private Text secondBottomText;
 
         [Header("Managers")]
-        [SerializeField] private GridManager sudokuManager;
+        [SerializeField] private GridManager gridManager;
         [SerializeField] private SceneController sceneController;
 
         #endregion
@@ -42,7 +55,24 @@ namespace Game.Panels
 
         private void OnDisable()
         {
-            ResetButtonListeners();
+            UnregisterEvents();
+        }
+
+        #endregion
+
+        #region INITIALIZATION
+
+        private void UnregisterEvents()
+        {
+            if (OnClickFirstBottomButton != null)
+            {
+                firstBottomButton.onClick.RemoveListener(OnClickFirstBottomButton);
+            }
+
+            if (OnClickSecondBottomButton != null)
+            {
+                secondBottomButton.onClick.RemoveListener(OnClickFirstBottomButton);
+            }
         }
 
         #endregion
@@ -51,18 +81,24 @@ namespace Game.Panels
 
         public void FinishGame(bool isVictory)
         {
-            SetActivePanel(true);
+            gridManager.GridBlocks.SetIsPause(true);
+            ActivatePanel(true);
+
             if (isVictory)
+            {
                 DisplayVictory();
+            }
             else
+            {
                 DisplayDefeat();
+            }
         }
 
         private void DisplayVictory()
         {
-            ResetButtonListeners();
+            UnregisterEvents();
 
-            Sudoku sudoku = sudokuManager.Sudoku;
+            Sudoku sudoku = gridManager.Sudoku;
             string victoryMessage = string.Format(
                 VICTORY_MESSAGE,
                 sudoku.Record.GetTimeOfSolution(),
@@ -71,43 +107,60 @@ namespace Game.Panels
                 sudoku.Record.Score
             );
 
-            SetPanelText(VICTORY_TEXT, victoryMessage, RECORDS_BUTTON_TEXT);
-            secondBottomButton.onClick.AddListener(sceneController.LoadRecordsScene);
+            ChangePanelText(VICTORY_TEXT, victoryMessage, RECORDS_BUTTON_TEXT);
+            SetOnClickSecondBottomButton(sceneController.LoadRecordsScene);
         }
 
         private void DisplayDefeat()
-        {   
-            ResetButtonListeners();
+        {
+            UnregisterEvents();
 
-            SetPanelText(DEFEAT_TEXT, DEFEAT_MESSAGE, RESTART_BUTTON_TEXT);
-            secondBottomButton.onClick.AddListener(RestartGame);
+            ChangePanelText(DEFEAT_TEXT, DEFEAT_MESSAGE, RESTART_BUTTON_TEXT);
+            SetOnClickFirstBottomButton(() => newGamePanelCanvas.SetSortingOrder(4));
+            SetOnClickSecondBottomButton(RestartGame);
         }
 
         private void RestartGame()
         {
-            sudokuManager.RestartGame();
-            SetActivePanel(false);
+            gridManager.RestartGame();
+            ActivatePanel(false);
         }
 
-        private void ResetButtonListeners() => secondBottomButton.onClick.RemoveAllListeners();
+        #endregion
+
+        #region UI UPDATES
+
+        public void ActivatePanel(bool isActive)
+        {
+            canvas.SetSortingOrder(isActive ? ACTIVE_CANVAS_SORTING_ORDER : DEFAULT_CANVAS_SORTING_ORDER);
+
+            foreach (var image in blockers)
+            {
+                image.SetRaycastTarget(isActive);
+            }
+        }
+
+        private void ChangePanelText(string top, string middle, string secondBottomButton)
+        {
+            topText.SetText(top);
+            middleText.SetText(middle);
+            secondBottomText.SetText(secondBottomButton);
+        }
 
         #endregion
 
         #region SET
 
-        private void SetActivePanel(bool isActive)
+        private void SetOnClickFirstBottomButton(UnityAction unityAction)
         {
-            canvas.SetSortingOrder(isActive 
-                ? ACTIVE_CANVAS_SORTING_ORDER
-                : DEFAULT_CANVAS_SORTING_ORDER);
-            blocker.SetRaycastTarget(isActive);
+            OnClickFirstBottomButton = unityAction;
+            firstBottomButton.onClick.AddListener(OnClickFirstBottomButton);
         }
 
-        private void SetPanelText(string top, string middle, string bottomButton)
+        private void SetOnClickSecondBottomButton(UnityAction unityAction)
         {
-            topText.SetText(top);
-            middleText.SetText(middle);
-            secondBottomText.SetText(bottomButton);
+            OnClickSecondBottomButton = unityAction;
+            secondBottomButton.onClick.AddListener(OnClickSecondBottomButton);
         }
 
         #endregion

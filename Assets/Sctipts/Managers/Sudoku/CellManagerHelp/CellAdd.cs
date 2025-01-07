@@ -1,4 +1,3 @@
-using Game.Classes;
 using Help.UI;
 using static Game.Managers.Help.CellHightlighter;
 
@@ -8,15 +7,15 @@ namespace Game.Managers.Help
     {
         #region CORE LOGIC
 
-        public void AddValueWithoutMoveAndChecks(CellManager cellManager, Cell cell)
+        public void AddValueWithoutMoveAndChecks(CellManager cellManager, int value)
         {
-            cellManager.SetCell(cell);
+            cellManager.Cell.SetValue(value);
 
             if (GridManager.Instance.GridBlocks.IsNotepadeMode && cellManager.InputField.characterLimit == 0) // Если включен NotepadMode
                 cellManager.CellUI.SwitchToNormalMode(cellManager);
 
             cellManager.InputField.SetReadOnly(false);
-            UpdateCellState(cellManager);
+            UpdateCellState(cellManager, true);
             cellManager.SetTextDirectly(cellManager.Cell.Value.ToString());
         }
 
@@ -24,7 +23,7 @@ namespace Game.Managers.Help
 
         #region UPDATE
 
-        public void UpdateCellState(CellManager cellManager)
+        public void UpdateCellState(CellManager cellManager, bool undoLastMove)
         {
             GridManager gridManager = GridManager.Instance;
 
@@ -32,12 +31,12 @@ namespace Game.Managers.Help
             gridManager.Sudoku.SetValueRealGrid(cellManager.Cell);
 
             cellManager.CellHightlighter.Select(cellManager);
-            UpdateCellHighlighting(cellManager);
+            UpdateCellHighlighting(cellManager, undoLastMove);
 
             gridManager.CheckGameCompletion();
         }
 
-        private void UpdateCellHighlighting(CellManager cellManager)
+        private void UpdateCellHighlighting(CellManager cellManager, bool undoLastMove)
         {
             GridManager gridManager = GridManager.Instance;
             CellHightlighter cellHightlighter = cellManager.CellHightlighter;
@@ -47,7 +46,7 @@ namespace Game.Managers.Help
                 cellHightlighter.HighlightCell(cellManager, CellHighlightType.Right);
                 cellManager.InputField.SetReadOnly(true);
 
-                if (!cellManager.Cell.AddScoreForCorrectFilling) 
+                if (!cellManager.Cell.AddScoreForCorrectFilling) // Решить правильно можно только один раз
                 {
                     cellManager.Cell.SetAddScoreForCorrectFilling(true);
                     gridManager.GridAdd.AddScoreByScoreType(gridManager, GridAdd.ScoreType.FillCorrectly);
@@ -56,6 +55,10 @@ namespace Game.Managers.Help
             else 
             {
                 cellHightlighter.HighlightCell(cellManager, CellHighlightType.Wrong);
+                if (!undoLastMove) // Только если это не возвращение значения
+                {
+                    gridManager.GridAdd.AddMistake(gridManager);
+                }
             }
         }
 

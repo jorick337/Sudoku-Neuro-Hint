@@ -55,8 +55,7 @@ namespace Game.Managers.Help
             bool isNotepadMode = gridBlocks.IsNotepadeMode;
             gridBlocks.SetIsNotepadMode(false);
 
-            hint.CellManager.SetTextDirectly("");
-            hint.CellManager.SetTextWithValidate(hint.Value.ToString());
+            hint.CellManager.CellAdd.AddValueWithoutMoveAndChecks(hint.CellManager, hint.Value);
 
             hint.GridBlock.SelectedBlockImage.SetEnabled(false);
             hint.CellManager.SetActiveVisibilityAnimation(false);

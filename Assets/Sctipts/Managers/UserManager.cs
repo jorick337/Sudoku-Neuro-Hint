@@ -63,23 +63,28 @@ namespace Game.Managers
         {
             SetSudoku(sudoku);
             AddRecord(sudoku.Record);
-            SaveUsers();
+            Debug.Log(123);
+            saveManager.SaveUsers(Users);
         }
-
-        public void SaveUsers() => saveManager.SaveUsers(Users);
 
         private void Load()
         {
             List<User> users = saveManager.LoadUsers();
-            users?
-                .Where(user => !IsUsernameRepetition(user.Username))
-                .ToList()
-                .ForEach(user =>
+            if (users != null)
+            {
+                foreach (var user in users)
                 {
-                    AddUser(user);
-                    if (User.Username == user.Username)
-                        User = new(user);
-                });
+                    if (!IsUsernameRepetition(user.Username))
+                    {
+                        AddUser(user);
+
+                        if (User.Username == user.Username) // Если это "Sudoku"
+                        {
+                            User = user;
+                        }
+                    }
+                }
+            }
         }
 
         #endregion
@@ -88,13 +93,6 @@ namespace Game.Managers
 
         public void SetSudoku(Sudoku sudoku) => User.UnfinishedSudoku = sudoku;
         public void SetUser(User user) => User = user;
-
-        #endregion
-
-        #region GET
-
-        public User GetUserByUsername(string username) => Users
-            .FirstOrDefault(userlist => userlist.Username == username);
 
         #endregion
 
@@ -107,7 +105,7 @@ namespace Game.Managers
 
         #region ADD
 
-        public void AddUser(User user) => Users.Add(new(user));
+        public void AddUser(User user) => Users.Add(user);
         public void AddRecord(Record Record) => User.Records.Add(Record);
 
         #endregion

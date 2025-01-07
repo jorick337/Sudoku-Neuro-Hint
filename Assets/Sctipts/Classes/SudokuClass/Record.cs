@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Game.Classes
@@ -32,6 +33,6 @@ namespace Game.Classes
 
         public void AddMistake() => NumberOfMistakes += 1;
         public void AddTime(float value) => TimeOfSolution += value;
-        public void AddScore(int value) => Score += value;
+        public void AddScore(int value) => Score = Mathf.Max(0, Score + value);
     }
 }

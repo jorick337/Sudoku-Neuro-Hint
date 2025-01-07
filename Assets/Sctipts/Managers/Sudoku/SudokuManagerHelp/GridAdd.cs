@@ -89,22 +89,25 @@ namespace Game.Managers.Help
         public void AddScoreByScoreType(GridManager gridManager, ScoreType scoreType)
         {
             ScoreRecordPoints scoreRecordPoints = AppSettingsManager.Instance.SelectedScoreRecordPoints;
-            
-            Record record = gridManager.Sudoku.Record;
-            bool giveTimeBonus = record.TimeOfSolution < record.Level * record.Level;
 
+            Record record = gridManager.Sudoku.Record;
+
+            float timeRatio = (float)record.Level * 5 * 60; // Базовое время: 5 минут на уровень
+            bool giveTimeBonus = record.TimeOfSolution < timeRatio;
+
+            Debug.Log(record.TimeOfSolution + " " + timeRatio);
             int score = scoreType switch
             {
                 ScoreType.FillCorrectly => scoreRecordPoints.FillCorrectly,
                 ScoreType.LevelFinished => scoreRecordPoints.LevelFinished,
-                ScoreType.QuickFinish =>  giveTimeBonus ? scoreRecordPoints.QuickFinish : 0, // Если время решения меньше квадрата уровня судоку
-                ScoreType.WrongFill => -scoreRecordPoints.WrongFill,                              // С минусом это штрафы
-                ScoreType.HintTaken => -scoreRecordPoints.HintTaken,
-                ScoreType.RevertMove => -scoreRecordPoints.RevertMove,
+                ScoreType.QuickFinish => giveTimeBonus ? scoreRecordPoints.QuickFinish : 0,
+                ScoreType.WrongFill => scoreRecordPoints.WrongFill,
+                ScoreType.HintTaken => scoreRecordPoints.HintTaken,
+                ScoreType.RevertMove => scoreRecordPoints.RevertMove,
                 _ => 0
             };
-            
-            record.AddScore(Mathf.Max(0, record.Score + score));
+
+            record.AddScore(score);
             gridManager.GameInfoPanel.SetScoreRecordText(record.Score);
         }
 

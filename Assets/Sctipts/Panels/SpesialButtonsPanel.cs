@@ -113,7 +113,7 @@ namespace Game.Panels
         {
             CellManager cellManager = gridManager.GridBlocks.Blocks[cell.Block].CellManagers[cell.Number];
 
-            cellManager.CellAdd.AddValueWithoutMoveAndChecks(cellManager, cell);
+            cellManager.CellAdd.AddValueWithoutMoveAndChecks(cellManager, cell.Value);
             gridManager.GridAdd.AddScoreByScoreType(gridManager, ScoreType.RevertMove);
         }
 

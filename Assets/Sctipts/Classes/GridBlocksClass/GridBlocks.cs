@@ -44,8 +44,6 @@ namespace Game.Classes
         public void SetIsNotepadMode(bool value) => IsNotepadeMode = value;
         public void SetIsPause(bool value) => IsPaused = value;
 
-        public void SetMovesHistory(Stack<Movement> movesHistory) => MovesHistory = movesHistory;
-
         #endregion
     }
 }

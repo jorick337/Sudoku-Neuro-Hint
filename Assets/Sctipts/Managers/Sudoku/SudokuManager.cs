@@ -90,7 +90,9 @@ namespace Game.Managers
         private void OnDestroy()
         {
             if (_appSettingsManager.AppSettingData.AutosaveSudoku)
+            {
                 _userManager.SaveGameProgress(Sudoku);
+            }
         }
 
         #endregion
@@ -110,9 +112,15 @@ namespace Game.Managers
             GridUI = new();
             GridEvents = new();
 
-            Sudoku = _appSettingsManager.IsNewGame
-                ? new Sudoku(_appSettingsManager.SelectedLevel)
-                : _userManager.User.UnfinishedSudoku;
+            if (_appSettingsManager.IsNewGame)
+            {
+                Sudoku = new Sudoku(_appSettingsManager.SelectedLevel);
+                _appSettingsManager.SetIsNewGame(false);
+            }
+            else
+            {
+                Sudoku = _userManager.User.UnfinishedSudoku;
+            }
 
             _appSettingsManager.SetSelectedScoreRecordPoints(Sudoku.Record.Level);
         }
@@ -176,21 +184,18 @@ namespace Game.Managers
         public void RestartGame()
         {
             Sudoku.SetRealGrid((int[,])Sudoku.InitialGrid.Clone());
+            Sudoku.Record = new(Sudoku.Record.Level, 0, 0, 0, 0);
+
             GridBlocks.MovesHistory.Clear();
             GridBlocks.SetIsNotepadMode(false);
+
             ResetGame();
         }
 
         private void ResetGame()
         {
-            Destroy(_selectedGrid);
+            DestroyImmediate(_selectedGrid);
             InstantiateGridBySize();
-            
-            colorThemeManager.UpdateUIElementsAndColorTheme();
-
-            CellManager cellManager = GridBlocks.AllCellManagers[0];
-            cellManager.CellHightlighter.UnselectAll(cellManager.Cell.CellGroups);
-
             GridUI.UpdateGameInfoPanel(this);
         }
 
@@ -214,7 +219,7 @@ namespace Game.Managers
         {
             GridBlocks.SetIsPause(true);
             GridAdd.AddScoreByScoreType(this, GridAdd.ScoreType.LevelFinished);
-            _userManager.SaveGameProgress(null);
+            _userManager.SaveGameProgress(Sudoku);
             finishGamePanel.FinishGame(true);
         }
 

@@ -291,9 +291,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 1605874657}
     m_Modifications:
     - target: {fileID: 1358157690388493641, guid: 5f469e9123e059b0da1d96f525d7afc2, type: 3}
+      propertyPath: gridManager
+      value: 
+      objectReference: {fileID: 4983488786745718135}
+    - target: {fileID: 1358157690388493641, guid: 5f469e9123e059b0da1d96f525d7afc2, type: 3}
       propertyPath: sudokuManager
       value: 
       objectReference: {fileID: 4983488786745718135}
+    - target: {fileID: 1358157690388493641, guid: 5f469e9123e059b0da1d96f525d7afc2, type: 3}
+      propertyPath: finishGamePanel
+      value: 
+      objectReference: {fileID: 1055680011}
     - target: {fileID: 1358157690388493641, guid: 5f469e9123e059b0da1d96f525d7afc2, type: 3}
       propertyPath: sceneController
       value: 
@@ -2432,13 +2440,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3113f16d51f0da8b1ba6c6bd1469f59e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  newGamePanelCanvas: {fileID: 2087334406}
+  blockers:
+  - {fileID: 524098173}
+  - {fileID: 468409510}
   canvas: {fileID: 1055680014}
-  blocker: {fileID: 468409510}
   topText: {fileID: 1136448477}
   middleText: {fileID: 1083257693}
+  firstBottomButton: {fileID: 1974532181}
   secondBottomButton: {fileID: 455493697}
   secondBottomText: {fileID: 976223352}
-  sudokuManager: {fileID: 4983488786745718135}
+  gridManager: {fileID: 4983488786745718135}
   sceneController: {fileID: 1055885923}
 --- !u!114 &1055680012
 MonoBehaviour:
@@ -4118,19 +4130,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1974532182}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2087334406}
-        m_TargetAssemblyTypeName: UnityEngine.Canvas, UnityEngine
-        m_MethodName: set_sortingOrder
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1974532182
 MonoBehaviour:
   m_ObjectHideFlags: 0

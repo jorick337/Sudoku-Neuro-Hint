@@ -46,7 +46,7 @@ namespace Game.Managers
 
         private void OnApplicationQuit() 
         {
-            // saveManager.SaveAppSettingsData(AppSettingData);
+            saveManager.SaveAppSettingsData(AppSettingData);
         }
 
         #endregion
@@ -58,7 +58,7 @@ namespace Game.Managers
             AppSettingData = saveManager.LoadAppSettingsData();
 
             SetSelectedLevel(AppSettingData.DefaultLevel);
-            SetIsNewGame(true);
+            SetIsNewGame(false);
             
             SetDefaultSound(AppSettingData.DefaultSound);
 

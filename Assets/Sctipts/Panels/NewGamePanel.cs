@@ -19,6 +19,9 @@ namespace Game.Panels
         [SerializeField] private Button continueGameButton;
         [SerializeField] private Text continueGameText;
 
+        [Header("Finish Game")]
+        [SerializeField] private FinishGamePanel finishGamePanel;
+
         [Header("Managers")]
         [SerializeField] private SceneController sceneController;
         [SerializeField] private ColorThemeManager colorThemeManager;
@@ -105,6 +108,7 @@ namespace Game.Panels
         {
             SelectLevelButton(_appSettingsManager.AppSettingData.DefaultLevel);
             ImproveContinueGame();
+            ImproveFinishGame();
         }
 
         private void ImproveContinueGame()
@@ -120,6 +124,8 @@ namespace Game.Panels
                 continueGameButton.SetInteractable(hasUnfinishedSudoku);
             }
         }
+
+        private void ImproveFinishGame() => finishGamePanel?.ActivatePanel(false); // Скрыть панель
 
         private void SelectLevelButton(int value) => levelButtons[value - 1].Select();
 

@@ -86,11 +86,11 @@ namespace Game.Managers
         {
             int layer = LayerMask.NameToLayer(layerName);
             if (layer == -1)
+            {
                 return new T[0];
+            }
 
-            return FindObjectsOfType<T>()
-                .Where(obj => obj.gameObject.layer == layer)
-                .ToArray();
+            return FindObjectsOfType<T>().Where(obj => obj.gameObject.layer == layer).ToArray();
         }
 
         #endregion
