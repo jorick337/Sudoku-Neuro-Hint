@@ -46,7 +46,7 @@ namespace Game.Managers.Help
                 cellHightlighter.HighlightCell(cellManager, CellHighlightType.Right);
                 cellManager.InputField.SetReadOnly(true);
 
-                if (!cellManager.Cell.AddScoreForCorrectFilling) // Решить правильно можно только один раз
+                if (!cellManager.Cell.AddScoreForCorrectFilling && !undoLastMove) // Решить правильно можно только один раз
                 {
                     cellManager.Cell.SetAddScoreForCorrectFilling(true);
                     gridManager.GridAdd.AddScoreByScoreType(gridManager, GridAdd.ScoreType.FillCorrectly);

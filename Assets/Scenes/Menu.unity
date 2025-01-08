@@ -1774,7 +1774,7 @@ GameObject:
   - component: {fileID: 775018551}
   - component: {fileID: 775018553}
   - component: {fileID: 775018552}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: SceneBlocker
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,24 +12,39 @@ namespace Game.Panels
 {
     public class SpesialButtonsPanel : MonoBehaviour
     {
+        #region CONSTANTS
+
+        private const float TRANSPARENCY_ACTIVE = 1;
+        private const float TRANSPARENCY_INACTIVE = 0.4f;
+
+        #endregion
+
+        #region EVENTS
+
+        private UnityAction[] buttonActions;
+
+        #endregion
+
         #region CORE
 
         [Header("Core")]
+        [SerializeField] private AppSettingsPanel appSettingsPanel;
         [SerializeField] private Button comeBackButton;
         [SerializeField] private Button clearCellButton;
-        [SerializeField] private Button hintButton;
-        [SerializeField] private Button notepadButton;
-        [SerializeField] private Image notepadImage;
         [SerializeField] private Button quickNotesButton;
-
-        [Header("Focus Cell Input")]
         [SerializeField] private Button[] cellValueButtons = new Button[9]; // Кнопок всего девять
 
-        private UnityAction[] buttonActions;
+        [Header("Hint and Notepad UI")]
+        [SerializeField] private Button hintButton;
+        [SerializeField] private Image hintImage;
+        [SerializeField] private Button notepadButton;
+        [SerializeField] private Image notepadImage;
 
         [Header("Managers")]
         [SerializeField] private GridManager gridManager;
         [SerializeField] private HintManager hintManager;
+
+        private AppSettingsManager _appSettingsManager;
 
         #endregion
 
@@ -38,6 +53,8 @@ namespace Game.Panels
         private void Awake()
         {
             InitializeValues();
+            InitializeManagers();
+            InitializeUI();
         }
 
         private void OnEnable()
@@ -59,6 +76,17 @@ namespace Game.Panels
             buttonActions = new UnityAction[9];
         }
 
+        private void InitializeManagers()
+        {
+            _appSettingsManager = AppSettingsManager.Instance;
+        }
+
+        private void InitializeUI()
+        {
+            UpdateHintActivity();
+            notepadImage.SetTransparency(TRANSPARENCY_INACTIVE);
+        }
+
         private void RegisterEvents(bool register)
         {
             if (register)
@@ -70,6 +98,8 @@ namespace Game.Panels
                 hintButton.onClick.AddListener(GenerateHint);
                 notepadButton.onClick.AddListener(ToggleNotepadMode);
                 quickNotesButton.onClick.AddListener(PopulateQuickNotes);
+
+                appSettingsPanel.ChangingUseHints += UpdateHintActivity;
             }
             else
             {
@@ -80,6 +110,8 @@ namespace Game.Panels
                 hintButton.onClick.RemoveListener(GenerateHint);
                 notepadButton.onClick.RemoveListener(ToggleNotepadMode);
                 quickNotesButton.onClick.RemoveListener(PopulateQuickNotes);
+
+                appSettingsPanel.ChangingUseHints -= UpdateHintActivity;
             }
         }
 
@@ -143,7 +175,7 @@ namespace Game.Panels
         private void ToggleNotepadMode()
         {
             bool isNotepadMode = !gridManager.GridBlocks.IsNotepadeMode;
-            float transparencyImage = (float)(isNotepadMode ? 1.0 : 0.6);
+            float transparencyImage = isNotepadMode ? TRANSPARENCY_ACTIVE : TRANSPARENCY_INACTIVE;
 
             gridManager.GridBlocks.SetIsNotepadMode(isNotepadMode);
             notepadImage.SetTransparency(transparencyImage);
@@ -160,7 +192,7 @@ namespace Game.Panels
             foreach (var cellManager in gridManager.GridBlocks.AllCellManagers)
             {
                 // Если ячейка не решенная и в ней нет значений
-                if (!cellManager.InputField.readOnly && cellManager.Cell.Value == 0) 
+                if (!cellManager.InputField.readOnly && cellManager.Cell.Value == 0)
                 {
                     cellManager.CellUI.SwitchToNotepadMode(cellManager);
 
@@ -195,6 +227,18 @@ namespace Game.Panels
                 else
                     cellValueButtons[i].onClick.RemoveListener(buttonActions[i]);
             }
+        }
+
+        #endregion
+   
+        #region CALLBACKS
+
+        private void UpdateHintActivity()
+        {
+            bool isActive = _appSettingsManager.AppSettingData.UseHints;
+
+            hintButton.SetInteractable(isActive);
+            hintImage.SetTransparency(isActive ? TRANSPARENCY_ACTIVE : TRANSPARENCY_INACTIVE);
         }
 
         #endregion

@@ -57,9 +57,6 @@ namespace Game.Managers.Help
 
                 cellManagers.SetTextTransparency(0f);
                 cellManagers[0].CellHightlighter.UnselectAll(cellManagers[0].Cell.CellGroups);
-
-
-
             }
 
             gridManager.SetPauseGame(PauseGame);
@@ -72,7 +69,7 @@ namespace Game.Managers.Help
             {
                 GridBlocks gridBlocks = gridManager.GridBlocks;
 
-                gridBlocks.SetIsPause(true);
+                gridBlocks.SetIsPause(false);
                 gridBlocks.AllCellManagers.SetTextTransparency(1f);
                 EventSystem.current.SetSelectedGameObject(gridManager.GridBlocks.FocusedCellManager?.gameObject);
             }

@@ -81,7 +81,6 @@ namespace Game.Panels
 
         public void FinishGame(bool isVictory)
         {
-            gridManager.GridBlocks.SetIsPause(true);
             ActivatePanel(true);
 
             if (isVictory)

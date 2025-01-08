@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using Help.Classes;
+using UnityEngine;
 
 namespace Game.Classes
 {
@@ -142,7 +143,7 @@ namespace Game.Classes
         #region SET
 
         public void SetValueRealGrid(Cell cell) => RealGrid[cell.Block, cell.Number] = cell.Value;
-        public void SetRealGrid(int[,] grid) => RealGrid = grid;
+        public void SetRealGrid(int[,] grid) => RealGrid = (int[,])grid.Clone();
 
         #endregion
 

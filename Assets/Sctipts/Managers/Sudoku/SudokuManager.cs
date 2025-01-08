@@ -4,6 +4,7 @@ using Game.Classes;
 using Game.Managers.Help;
 using Game.Panels;
 using Help.Classes;
+using Help.UI;
 using UnityEngine;
 
 namespace Game.Managers
@@ -91,7 +92,7 @@ namespace Game.Managers
         {
             if (_appSettingsManager.AppSettingData.AutosaveSudoku)
             {
-                _userManager.SaveGameProgress(Sudoku);
+                _userManager.SaveSudoku(Sudoku);
             }
         }
 
@@ -183,7 +184,7 @@ namespace Game.Managers
 
         public void RestartGame()
         {
-            Sudoku.SetRealGrid((int[,])Sudoku.InitialGrid.Clone());
+            Sudoku.SetRealGrid(Sudoku.InitialGrid);
             Sudoku.Record = new(Sudoku.Record.Level, 0, 0, 0, 0);
 
             GridBlocks.MovesHistory.Clear();
@@ -207,20 +208,29 @@ namespace Game.Managers
         {
             if (Sudoku.Record.NumberOfMistakes >= 3)
             {
-                finishGamePanel.FinishGame(false);
+                FinishGame(false);
                 return;
             }
-
-            if (GridBlocks.AllCellManagers.All(cell => cell.InputField.readOnly))
-                FinishGame();
+            else if (GridBlocks.AllCellManagers.All(cell => cell.InputField.readOnly))
+            {
+                FinishGame(true);
+            }
         }
 
-        private void FinishGame()
+        private void FinishGame(bool winGame)
         {
+            GridBlocks.FocusedCellManager.InputField.SetReadOnly(true);
             GridBlocks.SetIsPause(true);
-            GridAdd.AddScoreByScoreType(this, GridAdd.ScoreType.LevelFinished);
-            _userManager.SaveGameProgress(Sudoku);
-            finishGamePanel.FinishGame(true);
+
+            if (winGame)
+            {
+                GridAdd.AddScoreByScoreType(this, GridAdd.ScoreType.LevelFinished);
+                
+                _userManager.AddRecord(Sudoku.Record);
+                _userManager.SaveSudoku(Sudoku);
+            }
+
+            finishGamePanel.FinishGame(winGame);
         }
 
         #endregion

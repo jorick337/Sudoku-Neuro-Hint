@@ -108,7 +108,7 @@ namespace Game.Managers.Help
         {
             { "MainGrid", ConvertGridToString(sudoku.MainGrid) },
             { "RealGrid", ConvertGridToString(sudoku.RealGrid) },
-            { "InitialRealGrid", ConvertGridToString(sudoku.InitialGrid) },
+            { "InitialGrid", ConvertGridToString(sudoku.InitialGrid) },
             { "Record", SerializeRecord(sudoku.Record) }
         };
 

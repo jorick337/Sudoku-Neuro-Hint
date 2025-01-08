@@ -1,11 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Game.Managers;
+using System;
 
 namespace Game.Panels
 {
     public class AppSettingsPanel : MonoBehaviour
     {
+        #region EVENTS
+
+        public event Action ChangingUseHints;
+
+        #endregion
+
         #region CORE
 
         [Header("Music")]
@@ -77,7 +84,7 @@ namespace Game.Panels
                 autosaveSudokuToggle.onValueChanged.AddListener(_appSettings.SetAutosaveSudoku);
                 autosaveRecordToggle.onValueChanged.AddListener(_appSettings.SetAutosaveRecord);
 
-                hintsToggle.onValueChanged.AddListener(_appSettings.SetUseHints);
+                hintsToggle.onValueChanged.AddListener(ToggleUseHints);
             }
             else
             {
@@ -90,8 +97,18 @@ namespace Game.Panels
                 autosaveSudokuToggle.onValueChanged.RemoveListener(_appSettings.SetAutosaveSudoku);
                 autosaveRecordToggle.onValueChanged.RemoveListener(_appSettings.SetAutosaveRecord);
 
-                hintsToggle.onValueChanged.RemoveListener(_appSettings.SetUseHints);
+                hintsToggle.onValueChanged.RemoveListener(ToggleUseHints);
             }
+        }
+
+        #endregion
+
+        #region CALLBACKS
+
+        private void ToggleUseHints(bool value)
+        {
+            _appSettings.SetUseHints(value);
+            ChangingUseHints.Invoke();
         }
 
         #endregion

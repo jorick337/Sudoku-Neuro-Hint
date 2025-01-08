@@ -59,11 +59,10 @@ namespace Game.Managers
 
         #region CORE LOGIC
 
-        public void SaveGameProgress(Sudoku sudoku)
+        public void SaveSudoku(Sudoku sudoku)
         {
-            SetSudoku(sudoku);
-            AddRecord(sudoku.Record);
             Debug.Log(123);
+            SetSudoku(sudoku);
             saveManager.SaveUsers(Users);
         }
 

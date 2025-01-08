@@ -31,6 +31,7 @@ namespace Game.Managers
         public CellHightlighter CellHightlighter { get; private set; }
         public CellUI CellUI { get; private set; }
         public CellEvents CellEvents { get; private set; }
+
         [Header("Core")]
         [SerializeField] private int block;
         [SerializeField] private int number; // Номер ячейки в блоке

@@ -3129,9 +3129,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   comeBackButton: {fileID: 7062330475982254447}
   clearCellButton: {fileID: 5473096675352301981}
-  hintButton: {fileID: 7617262371178845910}
-  notepadButton: {fileID: 1861682748575794546}
-  notepadImage: {fileID: 7707214953240237243}
   quickNotesButton: {fileID: 4473180987998816398}
   cellValueButtons:
   - {fileID: 9150281305356577033}
@@ -3143,6 +3140,11 @@ MonoBehaviour:
   - {fileID: 4976969532388735568}
   - {fileID: 6870474488180367225}
   - {fileID: 6016141300588924295}
+  hintButton: {fileID: 7617262371178845910}
+  hintImage: {fileID: 2029681727498924039}
+  notepadButton: {fileID: 1861682748575794546}
+  notepadImage: {fileID: 7707214953240237243}
+  appSettingsManager: {fileID: 0}
   gridManager: {fileID: 5561871372231150146}
   hintManager: {fileID: 0}
 --- !u!1 &7738368463627441532
