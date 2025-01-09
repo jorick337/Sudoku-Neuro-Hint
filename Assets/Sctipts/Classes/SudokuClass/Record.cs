@@ -1,4 +1,4 @@
-using Unity.Mathematics;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Game.Classes
@@ -12,6 +12,7 @@ namespace Game.Classes
         public float TimeOfSolution { get; private set; }
         public int Score { get; private set; }
 
+        [JsonConstructor]
         public Record(int level, int mistakes, int hints, float time, int score)
         {
             Level = level;
@@ -19,6 +20,15 @@ namespace Game.Classes
             NumberOfHints = hints;
             TimeOfSolution = time;
             Score = score;
+        }
+
+        public Record(Record record)
+        {
+            Level = record.Level;
+            NumberOfMistakes = record.NumberOfMistakes;
+            NumberOfHints = record.NumberOfHints;
+            TimeOfSolution = record.TimeOfSolution;
+            Score = record.Score;
         }
 
         public void SetNumberOfHints(int value) => NumberOfHints = value;

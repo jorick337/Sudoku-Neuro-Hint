@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements.Experimental;
 
 namespace Help.UI
 {
@@ -71,13 +72,31 @@ namespace Help.UI
             }
         }
 
+        public static void SetEnabled(this Component component, bool value)
+        {
+            if (component == null)
+            {
+                return;
+            }
+
+            if (component is Image image)
+            {
+                image.enabled = value;
+                return;
+            }
+
+            if (component is Text text)
+            {
+                text.enabled = value;
+                return;
+            }
+        }
+
         public static void SetSortingOrder(this Canvas canvas, int value) =>
             canvas.sortingOrder = value;
-        
+
         public static void SetRaycastTarget(this Image image, bool value) =>
             image.raycastTarget = value;
-        public static void SetEnabled(this Image image, bool value) =>
-            image.enabled = value;
 
         public static void SetInteractable(this Button button, bool value) =>
             button.interactable = value;
@@ -88,7 +107,7 @@ namespace Help.UI
             inputField.readOnly = value;
         public static void SetCharacteLimit(this InputField inputField, int value) =>
             inputField.characterLimit = value;
-        
+
         #endregion
 
         #region GET

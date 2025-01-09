@@ -153,7 +153,15 @@ namespace Game.Panels
 
         #region CLEAR CELL
 
-        private void ClearFocusedCell() => gridManager.GridBlocks.FocusedCellManager.SetTextDirectly("");
+        private void ClearFocusedCell()
+        {
+            CellManager focusedCellManager = gridManager.GridBlocks.FocusedCellManager;
+            if (focusedCellManager.Cell.Value != 0 && !focusedCellManager.Cell.AddScoreForCorrectFilling)
+            {
+                focusedCellManager.CellAdd.AddValueWithoutMoveAndChecks(focusedCellManager, 0);
+                gridManager.GridAdd.AddScoreByScoreType(gridManager, ScoreType.RevertMove);
+            }
+        }
 
         #endregion
 
@@ -230,7 +238,7 @@ namespace Game.Panels
         }
 
         #endregion
-   
+
         #region CALLBACKS
 
         private void UpdateHintActivity()

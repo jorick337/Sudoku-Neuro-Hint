@@ -21,9 +21,6 @@ namespace Game.Managers.Help
                     cellManager.Cell.SetValue(value);
                     cellManager.SetTextDirectly(value.ToString());
                     cellManager.CellAdd.UpdateCellState(cellManager, false);
-
-                    GridManager gridManager = GridManager.Instance;
-                    gridManager.GridAdd.AddMove(gridManager, cellManager.Cell);
                 }
             }
 

@@ -108,7 +108,7 @@ namespace Game.Panels
         private void ToggleUseHints(bool value)
         {
             _appSettings.SetUseHints(value);
-            ChangingUseHints.Invoke();
+            ChangingUseHints?.Invoke();
         }
 
         #endregion

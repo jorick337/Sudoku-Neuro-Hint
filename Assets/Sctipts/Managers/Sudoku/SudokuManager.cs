@@ -5,6 +5,7 @@ using Game.Managers.Help;
 using Game.Panels;
 using Help.Classes;
 using Help.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Game.Managers
@@ -90,9 +91,13 @@ namespace Game.Managers
 
         private void OnDestroy()
         {
-            if (_appSettingsManager.AppSettingData.AutosaveSudoku)
+            if (_appSettingsManager.AppSettingData.AutosaveSudoku && !GridBlocks.AllCellManagers.All(cell => cell.InputField.readOnly))
             {
                 _userManager.SaveSudoku(Sudoku);
+            }
+            else
+            {
+                Sudoku = null;
             }
         }
 
@@ -120,10 +125,10 @@ namespace Game.Managers
             }
             else
             {
-                Sudoku = _userManager.User.UnfinishedSudoku;
+                Sudoku = new(_userManager.User.UnfinishedSudoku);
             }
 
-            _appSettingsManager.SetSelectedScoreRecordPoints(Sudoku.Record.Level);
+            _appSettingsManager.SetSelectedScoreRecordPoints(Sudoku.Record.Level - 1);
         }
 
         private void RegisterEvents(bool register)
@@ -225,8 +230,17 @@ namespace Game.Managers
             if (winGame)
             {
                 GridAdd.AddScoreByScoreType(this, GridAdd.ScoreType.LevelFinished);
-                
-                _userManager.AddRecord(Sudoku.Record);
+
+                if (_appSettingsManager.AppSettingData.AutosaveRecord)
+                {
+                    _userManager.AddRecord(Sudoku.Record);
+                }
+
+                _userManager.SaveSudoku(null);
+            }
+            else if (_appSettingsManager.AppSettingData.AutosaveSudoku)// Сохранение перезапущенной версии в случае поражения
+            {
+                Sudoku.SetRealGrid(Sudoku.InitialGrid);
                 _userManager.SaveSudoku(Sudoku);
             }
 
@@ -236,6 +250,8 @@ namespace Game.Managers
         #endregion
 
         #region SET
+
+        public void SetSudoku(Sudoku sudoku) => Sudoku = sudoku;
 
         public void SetUpdateColors(Action action) => UpdateColors += action;
 

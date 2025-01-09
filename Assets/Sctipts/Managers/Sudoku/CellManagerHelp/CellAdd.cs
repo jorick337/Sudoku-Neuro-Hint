@@ -55,8 +55,10 @@ namespace Game.Managers.Help
             else 
             {
                 cellHightlighter.HighlightCell(cellManager, CellHighlightType.Wrong);
+
                 if (!undoLastMove) // Только если это не возвращение значения
                 {
+                    gridManager.GridAdd.AddMove(gridManager, cellManager.Cell);
                     gridManager.GridAdd.AddMistake(gridManager);
                 }
             }

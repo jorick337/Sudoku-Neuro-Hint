@@ -11,6 +11,7 @@ namespace Game.Managers.Help
 
         public void AddMove(GridManager gridManager, Cell cell)
         {
+            Debug.Log(cell.Value);
             if (gridManager.GridBlocks.IsNotepadeMode)
             {
                 return;

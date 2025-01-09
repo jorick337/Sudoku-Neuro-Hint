@@ -61,7 +61,6 @@ namespace Game.Managers
 
         public void SaveSudoku(Sudoku sudoku)
         {
-            Debug.Log(123);
             SetSudoku(sudoku);
             saveManager.SaveUsers(Users);
         }

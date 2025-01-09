@@ -44,6 +44,14 @@ namespace Game.Classes
             InitialGrid = (int[,])RealGrid.Clone();
         }
 
+        public Sudoku(Sudoku unfinishedSudoku)
+        {
+            MainGrid = (int[,])unfinishedSudoku.MainGrid.Clone();
+            InitialGrid = (int[,])unfinishedSudoku.InitialGrid.Clone();
+            RealGrid = (int[,])unfinishedSudoku.RealGrid.Clone();
+            Record = new(unfinishedSudoku.Record);
+        }
+
         #region CORE LOGIC
 
         private void GenerateNewGrid(int[,] grid)

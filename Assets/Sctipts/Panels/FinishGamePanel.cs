@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using Game.Managers;
 using Help.UI;
 using Game.Classes;
-using System;
 using UnityEngine.Events;
 
 namespace Game.Panels
@@ -26,7 +25,6 @@ namespace Game.Panels
 
         #region EVENTS
 
-        private UnityAction OnClickFirstBottomButton;
         private UnityAction OnClickSecondBottomButton;
 
         #endregion
@@ -64,14 +62,11 @@ namespace Game.Panels
 
         private void UnregisterEvents()
         {
-            if (OnClickFirstBottomButton != null)
-            {
-                firstBottomButton.onClick.RemoveListener(OnClickFirstBottomButton);
-            }
+            firstBottomButton.onClick.RemoveListener(OpenNewGamePanel);
 
             if (OnClickSecondBottomButton != null)
             {
-                secondBottomButton.onClick.RemoveListener(OnClickFirstBottomButton);
+                secondBottomButton.onClick.RemoveListener(OnClickSecondBottomButton);
             }
         }
 
@@ -96,6 +91,7 @@ namespace Game.Panels
         private void DisplayVictory()
         {
             UnregisterEvents();
+            SetOnClickSecondBottomButton(SaveAndShowRecord);
 
             Sudoku sudoku = gridManager.Sudoku;
             string victoryMessage = string.Format(
@@ -105,24 +101,16 @@ namespace Game.Panels
                 sudoku.Record.NumberOfHints,
                 sudoku.Record.Score
             );
-
             ChangePanelText(VICTORY_TEXT, victoryMessage, RECORDS_BUTTON_TEXT);
-            SetOnClickSecondBottomButton(sceneController.LoadRecordsScene);
         }
 
         private void DisplayDefeat()
         {
             UnregisterEvents();
+            firstBottomButton.onClick.AddListener(OpenNewGamePanel);
+            SetOnClickSecondBottomButton(RestartGame);
 
             ChangePanelText(DEFEAT_TEXT, DEFEAT_MESSAGE, RESTART_BUTTON_TEXT);
-            SetOnClickFirstBottomButton(() => newGamePanelCanvas.SetSortingOrder(4));
-            SetOnClickSecondBottomButton(RestartGame);
-        }
-
-        private void RestartGame()
-        {
-            gridManager.RestartGame();
-            ActivatePanel(false);
         }
 
         #endregion
@@ -150,16 +138,31 @@ namespace Game.Panels
 
         #region SET
 
-        private void SetOnClickFirstBottomButton(UnityAction unityAction)
-        {
-            OnClickFirstBottomButton = unityAction;
-            firstBottomButton.onClick.AddListener(OnClickFirstBottomButton);
-        }
-
         private void SetOnClickSecondBottomButton(UnityAction unityAction)
         {
             OnClickSecondBottomButton = unityAction;
             secondBottomButton.onClick.AddListener(OnClickSecondBottomButton);
+        }
+
+        #endregion
+
+        #region CALLBACKS
+
+        private void OpenNewGamePanel()
+        {
+            newGamePanelCanvas.SetSortingOrder(4);
+        }
+
+        private void SaveAndShowRecord()
+        {
+            gridManager.SetSudoku(null);
+            sceneController.LoadRecordsScene();
+        }
+
+        private void RestartGame()
+        {
+            gridManager.RestartGame();
+            ActivatePanel(false);
         }
 
         #endregion

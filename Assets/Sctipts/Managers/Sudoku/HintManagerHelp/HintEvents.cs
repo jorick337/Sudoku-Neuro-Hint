@@ -46,7 +46,8 @@ namespace Game.Managers.Help
 
         public void ImproveToExitMode(HintManager hintManager)
         {
-            GridBlocks gridBlocks = GridManager.Instance.GridBlocks;
+            GridManager gridManager = GridManager.Instance;
+            GridBlocks gridBlocks = gridManager.GridBlocks;
 
             Hint hint = hintManager.Hint;
             foreach (CellManager cellManager in gridBlocks.AllCellManagers)

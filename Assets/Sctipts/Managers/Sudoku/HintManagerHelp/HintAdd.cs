@@ -71,14 +71,14 @@ namespace Game.Managers.Help
             {
                 HintManager.VIEW_ONE => new (int index, string oldValue, string newValue)[]
                 {
-                    (0, TEXT_CELLS, $"<color=#{minorFocusedColor}>{TEXT_CELLS}</color>"),
-                    (0, TEXT_SELECTED_AREAS, $"<color=#{selectedCellColor}>{TEXT_SELECTED_AREAS}</color>"),
-                    (1, TEXT_BLOCK, $"<color=#{selectedBlockColor}>{TEXT_BLOCK}</color>"),
-                    (1, TEXT_CELL, $"<color=#{mainFocusedColor}>{TEXT_CELL}</color>")
+                    (0, TEXT_CELLS, $"<b><color=#{minorFocusedColor}>{TEXT_CELLS}</color></b>"),
+                    (0, TEXT_SELECTED_AREAS, $"<b><color=#{selectedCellColor}>{TEXT_SELECTED_AREAS}</color></b>"),
+                    (1, TEXT_BLOCK, $"<b><color=#{selectedBlockColor}>{TEXT_BLOCK}</color></b>"),
+                    (1, TEXT_CELL, $"<b><color=#{mainFocusedColor}>{TEXT_CELL}</color></b>")
                 },
                 HintManager.VIEW_TWO => new (int index, string oldValue, string newValue)[]
                 {
-                    (0, TEXT_THIS_CELL, $"<color=#{selectedCellColor}>{TEXT_THIS_CELL}</color>")
+                    (0, TEXT_THIS_CELL, $"<b><color=#{selectedCellColor}>{TEXT_THIS_CELL}</color></b>")
                 },
                 _ => null
             };

@@ -151,7 +151,9 @@ namespace Game.Managers
         {
             inputField.onValueChanged.RemoveAllListeners();
             if (!inputField.readOnly)
+            {
                 SetText(Value);
+            }
             inputField.onValueChanged.AddListener(OnValueChanged);
         }
 

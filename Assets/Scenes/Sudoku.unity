@@ -246,7 +246,6 @@ MonoBehaviour:
   timeText: {fileID: 350647183}
   pauseButton: {fileID: 527946220}
   unpauseButton: {fileID: 784528365}
-  settingsButton: {fileID: 0}
 --- !u!1 &100440268
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,8 +1288,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 1.2824707, y: 0}
+  m_SizeDelta: {x: -91.435, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &468409510
 MonoBehaviour:
@@ -2527,8 +2526,8 @@ MonoBehaviour:
   newGamePanelCanvas: {fileID: 2087334406}
   blockers:
   - {fileID: 524098173}
-  - {fileID: 468409510}
   - {fileID: 385906801}
+  - {fileID: 468409510}
   canvas: {fileID: 1055680014}
   topText: {fileID: 1136448477}
   middleText: {fileID: 1083257693}
@@ -3258,7 +3257,7 @@ GameObject:
   - component: {fileID: 1348381312}
   - component: {fileID: 1348381315}
   - component: {fileID: 1348381314}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

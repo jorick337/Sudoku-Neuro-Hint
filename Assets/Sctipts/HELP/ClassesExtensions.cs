@@ -12,10 +12,12 @@ namespace Help.Classes
     {
         #region SET
 
-        public static void SetTextTransparency(this CellManager[] cellManagers, float transparency)
+        public static void SetTextActivity(this CellManager[] cellManagers, bool isActive)
         {
             foreach (var cellManager in cellManagers)
-                cellManager.Text.SetTransparency(transparency);
+            {
+                cellManager.Text.SetEnabled(isActive);
+            }
         }
 
         #endregion
