@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Game.Classes;
 using Game.Managers.Help;
@@ -174,7 +175,15 @@ namespace Game.Managers
             _selectedGrid = Instantiate(gridPrefab, grid.transform);
             GridBlocks = _selectedGrid.GetComponent<GridBlocks>();
 
-            colorThemeManager.UpdateUIElementsAndColorTheme();
+            StartCoroutine(DelayedUpdateColorTheme());
+
+            IEnumerator DelayedUpdateColorTheme()// Ожидаем 1 кадр, чтобы все процессы завершились
+            {
+                yield return null;
+                colorThemeManager.UpdateUIElementsAndColorTheme();
+            }
+
+            // colorThemeManager.UpdateUIElementsAndColorTheme();
         }
 
         #endregion

@@ -1,6 +1,7 @@
 using System.Text;
 using Game.Classes;
 using Help.Classes;
+using Help.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,8 +56,18 @@ namespace Game.Managers.Help
         {
             void UpdateColors()
             {
+                Debug.Log("Update cell");
                 cellManager.Cell.SetCellColors(new(AppSettingsManager.Instance.SelectedColorTheme));
                 cellManager.CellHightlighter.HighlightCell(cellManager, CellHightlighter.CellHighlightType.Unselected);
+
+                if (cellManager.InputField.readOnly)
+                {
+                    cellManager.Text.SetColor(cellManager.Cell.CellColors.RightText);
+                }
+                else
+                {
+                    cellManager.Text.SetColor(cellManager.Cell.CellColors.WrongText);
+                }
             }
 
             cellManager.SetUpdateColors(UpdateColors);
@@ -82,7 +93,7 @@ namespace Game.Managers.Help
 
         public string GetNotepadText(Cell cell)
         {
-            Sudoku sudoku =  GridManager.Instance.Sudoku;
+            Sudoku sudoku = GridManager.Instance.Sudoku;
             StringBuilder result = new();
             for (int i = 1; i <= 9; i++)
             {

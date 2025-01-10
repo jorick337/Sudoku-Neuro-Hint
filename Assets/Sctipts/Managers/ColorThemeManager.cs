@@ -74,6 +74,7 @@ namespace Game.Managers
             ApplyOutlineColors((ColorTheme)colorTheme);
             ApplySudokuColors((ColorTheme)colorTheme);
 
+            Debug.Log("Change color");
             ChangingColorTheme?.Invoke();
         }
 

@@ -96,7 +96,6 @@ namespace Game.Managers.Help
             float timeRatio = (float)record.Level * 5 * 60; // Базовое время: 5 минут на уровень
             bool giveTimeBonus = record.TimeOfSolution < timeRatio;
 
-            Debug.Log(record.TimeOfSolution + " " + timeRatio);
             int score = scoreType switch
             {
                 ScoreType.FillCorrectly => scoreRecordPoints.FillCorrectly,

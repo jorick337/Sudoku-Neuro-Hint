@@ -33,9 +33,9 @@ namespace Help.UI
 
             if (component is Button button)
             {
+                
                 ColorBlock colors = button.colors;
-                colors.normalColor = new(colors.normalColor.r, colors.normalColor.g,
-                    colors.normalColor.b, value);
+                colors.normalColor = new(colors.normalColor.r, colors.normalColor.g, colors.normalColor.b, value);
                 button.colors = colors;
                 return;
             }

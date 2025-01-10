@@ -18,7 +18,7 @@ namespace Game.Classes
             Unselected = colorTheme.UnselectedImageGridCell;
             MainFocused = colorTheme.MainFocusedImageGridCell;
             MinorFocused = colorTheme.MinorFocusedImageGridCell;
-            RightText = colorTheme.Text;
+            RightText = colorTheme.RightTextGridCellColor;
             WrongText = colorTheme.WrongTextGridCellColor;
             Blocking = colorTheme.BlockingImageGridCell;
         }

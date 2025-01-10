@@ -14,8 +14,8 @@ namespace Game.Panels
     {
         #region CONSTANTS
 
-        private const float TRANSPARENCY_ACTIVE = 1;
-        private const float TRANSPARENCY_INACTIVE = 0.4f;
+        private const float TRANSPARENCY_ACTIVE = 0.65f;
+        private const float TRANSPARENCY_INACTIVE = 0.35f;
 
         #endregion
 
@@ -29,14 +29,23 @@ namespace Game.Panels
 
         [Header("Core")]
         [SerializeField] private AppSettingsPanel appSettingsPanel;
-        [SerializeField] private Button comeBackButton;
-        [SerializeField] private Button clearCellButton;
-        [SerializeField] private Button quickNotesButton;
         [SerializeField] private Button[] cellValueButtons = new Button[9]; // Кнопок всего девять
 
-        [Header("Hint and Notepad UI")]
+        [Header("Come back")]
+        [SerializeField] private Button comeBackButton;
+        [SerializeField] private Image comeBackImage;
+
+        [Header("Clear cell")]
+        [SerializeField] private Button clearCellButton;
+        [SerializeField] private Image clearCellImage;
+
+        [Header("Hint")]
         [SerializeField] private Button hintButton;
         [SerializeField] private Image hintImage;
+
+        [Header("Notepad")]
+        [SerializeField] private Button quickNotesButton;
+        [SerializeField] private Image quickNotesImage;
         [SerializeField] private Button notepadButton;
         [SerializeField] private Image notepadImage;
 
@@ -85,6 +94,9 @@ namespace Game.Panels
         {
             UpdateHintActivity();
             notepadImage.SetTransparency(TRANSPARENCY_INACTIVE);
+            quickNotesImage.SetTransparency(TRANSPARENCY_ACTIVE);
+            clearCellImage.SetTransparency(TRANSPARENCY_ACTIVE);
+            comeBackImage.SetTransparency(TRANSPARENCY_ACTIVE);
         }
 
         private void RegisterEvents(bool register)
