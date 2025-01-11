@@ -916,6 +916,11 @@ MonoBehaviour:
   m_EffectColor: {r: 0.54509807, g: 0.27058825, b: 0.07450981, a: 0.14117648}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!4 &456731254 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1989678206188918763, guid: 379460807633404beb6fa6af3a079d6d, type: 3}
+  m_PrefabInstance: {fileID: 4688285979119358400}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &502214889
 GameObject:
   m_ObjectHideFlags: 0
@@ -3544,6 +3549,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1745279339}
   m_CullTransparentMesh: 1
+--- !u!1 &1779475602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1779475603}
+  - component: {fileID: 1779475604}
+  m_Layer: 0
+  m_Name: AI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1779475603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779475602}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 456731254}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1779475604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779475602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fb4a95ac70f50019a7d8382da3d4720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1795661172
 GameObject:
   m_ObjectHideFlags: 0
@@ -4583,7 +4632,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 1989678206188918763, guid: 379460807633404beb6fa6af3a079d6d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1779475603}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 379460807633404beb6fa6af3a079d6d, type: 3}
 --- !u!114 &4688285979119358401 stripped
