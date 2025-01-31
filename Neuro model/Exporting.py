@@ -1,5 +1,5 @@
 import torch
-import Untitled
+import Trainning
 import onnx
 
 # Загрузка обученной модели
