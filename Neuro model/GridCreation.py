@@ -69,3 +69,16 @@ full_sudoku = generate_full_sudoku()
 # display_grid(full_sudoku)
 # print("Puzzle:")
 # display_grid(puzzle)
+
+def generate_valid_sudoku_data(num_samples=1000):
+    puzzles = []
+    solutions = []
+
+    for _ in range(num_samples):
+        solution = generate_full_sudoku()
+        puzzle = remove_numbers(solution,36)
+        
+        puzzles.append(puzzle)
+        solutions.append(solution)
+
+    return np.array(puzzles), np.array(solutions)
