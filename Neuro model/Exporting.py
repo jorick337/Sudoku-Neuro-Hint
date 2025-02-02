@@ -1,10 +1,10 @@
 import torch
-import Trainning
 import onnx
+import HintNeuro
 
 # Загрузка обученной модели
-model = Untitled.SudokuHintNet()
-model.load_state_dict(torch.load("sudoku_hint_model.pth"))
+model = HintNeuro.SudokuHintNet()
+model.load_state_dict(torch.load("sudoku_hint_net.pth"))
 model.eval()
 
 # Пример входных данных (в формате тензора)

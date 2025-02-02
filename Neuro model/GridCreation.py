@@ -82,3 +82,16 @@ def generate_valid_sudoku_data(num_samples=1000):
         solutions.append(solution)
 
     return np.array(puzzles), np.array(solutions)
+
+def generate_valid_sudoku_block(num_samples=1000):
+    puzzles = []
+    solutions = []
+
+    for _ in range(num_samples):
+        puzzle = np.zeros(9)
+        solution = generate_sudoku_block()
+        
+        puzzles.append(puzzle)
+        solutions.append(solution)
+
+    return np.array(puzzles), np.array(solutions)
