@@ -56,7 +56,6 @@ namespace Game.Managers.Help
         {
             void UpdateColors()
             {
-                Debug.Log("Update cell");
                 cellManager.Cell.SetCellColors(new(AppSettingsManager.Instance.SelectedColorTheme));
                 cellManager.CellHightlighter.HighlightCell(cellManager, CellHightlighter.CellHighlightType.Unselected);
 

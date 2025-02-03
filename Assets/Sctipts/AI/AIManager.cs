@@ -1,124 +1,206 @@
 using UnityEngine;
 using Unity.Sentis;
 using Game.Managers;
-using Game.Classes;
-using System.Security.Cryptography;
 using System.Text;
+using Game.Classes;
 
-public class SudokuHintModel : MonoBehaviour
+namespace Game.AI
 {
-    public ModelAsset modelAsset; // ONNX модель, импортированная в Unity
-    private Model runtimeModel;   // Модель, загруженная для инференса
-    private Worker worker;        // Worker для выполнения инференса
-
-    void Start()
+    public class SudokuHintModel : MonoBehaviour
     {
-        // Загрузка модели из ModelAsset
-        runtimeModel = ModelLoader.Load(modelAsset);
+        #region CONSTANTS
 
-        // Создание Worker (выбор backend: GPU, CPU)
-        worker = new Worker(runtimeModel, BackendType.GPUCompute);
+        private const int SIZE_TENSOR = 81;
 
-        // Пример сетки судоку (одномерный массив)
-        Sudoku s = new Sudoku(1);
-        int[,] puzzle = s.RealGrid;
+        #endregion
 
-        // Преобразуем двумерный массив в одномерный
-        float[] puzzleFlattened = FlattenGrid(puzzle);
+        #region CORE
 
-        print("DSA");
-        // Create a 3D tensor shape with size 3 × 1 × 3
-        TensorShape shape = new TensorShape(81);
+        [Header("Core")]
+        [SerializeField] private ModelAsset modelAsset; // ONNX модель
 
-        // Create a new tensor from the array
-        Tensor<float> inputTensor = new Tensor<float>(shape, puzzleFlattened);
+        private Model _runtimeModel;
+        private Worker _worker;
 
-        // Выполнение инференса
-        worker.Schedule(inputTensor);
+        private Tensor<float> _inputTensor;
+        private Tensor<float> _outputTensor;
+        private TensorShape _shape;
 
-        // Получение результата
-        Tensor<float> outputTensor = worker.PeekOutput() as Tensor<float>;
-        string hint = GetHintFromOutput(outputTensor);
+        [Header("Managers")]
+        [SerializeField] private GridManager gridManager;
 
-        // Лог результата
-        Debug.Log(outputTensor);
-        Debug.Log($"Подсказка для судоку: {hint}");
+        #endregion
 
-        float[] t = FlattenGrid(s.MainGrid);
-        StringBuilder sb = new StringBuilder();
-        int size = 9; // Для судоку 9x9
+        #region MONO
 
-        for (int i = 0; i < size; i++)
+        private void Awake()
         {
-            for (int j = 0; j < size; j++)
+            InitializeValues();
+
+            // Загрузка модели из ModelAsset
+            _runtimeModel = ModelLoader.Load(modelAsset);
+
+            // Создание Worker (выбор backend: GPU, CPU)
+            _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+
+            // Пример сетки судоку (одномерный массив)
+            Sudoku s = gridManager.Sudoku;
+            int[,] puzzle = s.RealGrid;
+
+            // Преобразуем двумерный массив в одномерный
+            float[] puzzleFlattened = FlattenGrid(puzzle);
+
+            print("DSA");
+            // Create a 3D tensor shape with size 3 × 1 × 3
+            TensorShape shape = new TensorShape(81);
+
+            // Create a new tensor from the array
+            Tensor<float> inputTensor = new Tensor<float>(shape, puzzleFlattened);
+
+            // Выполнение инференса
+            _worker.Schedule(inputTensor);
+
+            // Получение результата
+            Tensor<float> outputTensor = _worker.PeekOutput() as Tensor<float>;
+            string hint = GetHintFromOutput();
+
+            // Лог результата
+            Debug.Log(outputTensor);
+            Debug.Log($"Подсказка для судоку: {hint}");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in puzzleFlattened)
             {
-                sb.Append(t[i * size + j] + " "); // Преобразуем одномерный индекс в двумерный
+                sb.Append($"{item} ");
             }
-            sb.AppendLine();
+
+            Debug.Log(sb.ToString());
+
+            // Очистка ресурсов
+            inputTensor.Dispose();
+            outputTensor.Dispose();
+
+            GenerateHint();
         }
 
-        Debug.Log(sb.ToString());
-
-        // Очистка ресурсов
-        inputTensor.Dispose();
-        outputTensor.Dispose();
-    }
-
-    void OnDestroy()
-    {
-        // Удаляем Worker при завершении работы
-        worker?.Dispose();
-    }
-
-    // Преобразование двумерного массива в одномерный
-    private float[] FlattenGrid(int[,] grid)
-    {
-        float[] flattened = new float[81];
-
-        for (int i = 0; i < 9; i++)
+        void OnDestroy()
         {
-            for (int j = 0; j < 9; j++)
-            {
-                flattened[i * 9 + j] = grid[i, j];
-            }
+            _worker?.Dispose();
         }
-        return flattened;
-    }
 
-    // Преобразование выходного тензора в подсказку
-    private string GetHintFromOutput(Tensor<float> outputTensor)
-    {
-        // Преобразуем тензор в массив
-        float[] outputArray = outputTensor.DownloadToArray();
+        #endregion
 
-        // Форма тензора: (81, 9)
-        int numCells = 81;
-        int numNumbers = 9;
+        #region INITIALIZATION
 
-        // Находим ячейку и число с максимальной вероятностью
-        int bestCell = 0;
-        int bestNumber = 0;
-        float maxProbability = 0;
-
-        for (int cell = 0; cell < numCells; cell++)
+        private void InitializeValues()
         {
-            for (int number = 0; number < numNumbers; number++)
+            _runtimeModel = ModelLoader.Load(modelAsset);
+            _worker = new Worker(_runtimeModel, BackendType.GPUCompute);
+
+            _shape = new(SIZE_TENSOR);
+        }
+
+        #endregion
+
+        #region CORE LOGIC
+
+        private void GenerateHint()
+        {
+            CreateInputTensor();
+
+            _worker.Schedule(_inputTensor);
+
+
+            string hint = GetHintFromOutput();
+
+            Debug.Log(hint);
+            ClearMemory();
+        }
+
+        private void CreateInputTensor()
+        {
+            int[,] puzzle = gridManager.Sudoku.RealGrid;
+            float[] puzzleFlattened = FlattenGrid(puzzle);
+
+            _inputTensor = new(_shape, puzzleFlattened);
+        }
+
+        private void ClearMemory()
+        {
+            _inputTensor.Dispose();
+            _outputTensor.Dispose();
+        }
+
+        #endregion
+
+        #region CONVERT
+
+        private float[] FlattenGrid(int[,] grid)
+        {
+            float[] flattened = new float[81];
+            int index = 0;
+
+            for (int blockRow = 0; blockRow < 3; blockRow++)   // Проход по строкам блоков (0,1,2)
             {
-                float probability = outputArray[cell * numNumbers + number];
-                if (probability > maxProbability)
+                for (int blockCol = 0; blockCol < 3; blockCol++)   // Проход по столбцам блоков (0,1,2)
                 {
-                    maxProbability = probability;
-                    bestCell = cell;
-                    bestNumber = number + 1; // Преобразуем в число от 1 до 9
+                    for (int row = 0; row < 3; row++)   // Внутри блока - идём по строкам
+                    {
+                        for (int col = 0; col < 3; col++)   // Внутри блока - идём по столбцам
+                        {
+                            int actualRow = blockRow * 3 + row;  // Пересчёт в глобальные координаты
+                            int actualCol = blockCol * 3 + col;
+
+                            flattened[index] = grid[actualRow, actualCol];
+                            index++;
+                        }
+                    }
                 }
             }
+
+            return flattened;
         }
 
-        // Преобразуем индекс ячейки в строку и столбец
-        int row = bestCell / 9;
-        int col = bestCell % 9;
+        #endregion
 
-        // Возвращаем подсказку в формате: "число строка столбец"
-        return $"{bestNumber} {row} {col}";
+        #region GET
+
+        private string GetHintFromOutput()
+        {
+            _outputTensor = _worker.PeekOutput() as Tensor<float>;
+            float[] outputArray = _outputTensor.DownloadToArray(); // (81,9) -> (729,)
+
+            // Форма тензора: (81, 9)
+            int numCells = 81;
+            int numNumbers = 9;
+
+            // Находим ячейку и число с максимальной вероятностью
+            int bestCell = 0;
+            int bestNumber = 0;
+            float maxProbability = 0;
+
+            for (int cell = 0; cell < numCells; cell++)
+            {
+                for (int number = 0; number < numNumbers; number++)
+                {
+                    float probability = outputArray[cell * numNumbers + number];
+                    if (probability > maxProbability)
+                    {
+                        maxProbability = probability;
+                        bestCell = cell;
+                        bestNumber = number + 1;    // Преобразуем в число от 1 до 9
+                    }
+                }
+            }
+
+            // индексы от 0 до 8
+            int row = bestCell / 9; // ячейка
+            int col = bestCell % 9; // столбец
+
+            return $"{bestNumber} {row} {col}";
+        }
+
+        #endregion
     }
 }
