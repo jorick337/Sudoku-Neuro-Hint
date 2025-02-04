@@ -21,5 +21,4 @@ torch.onnx.export(
     dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}}
 )
 
-
 print(f"Модель экспортирована в {onnx_file}")

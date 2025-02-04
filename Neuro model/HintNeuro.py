@@ -41,7 +41,7 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Обучение модели
 batch_size = 32
-num_epochs = 10
+num_epochs = 20
 
 # for epoch in range(num_epochs):
 #     for i in range(0, len(puzzles_tensor), batch_size):
@@ -56,8 +56,12 @@ num_epochs = 10
     
 #     print(f'Epoch {epoch+1}, Loss: {loss.item()}')
 
-# Сохранение модели
-torch.save(model.state_dict(), "sudoku_hint_net.pth")
+# # Сохранение модели
+# torch.save(model.state_dict(), "sudoku_hint_net.pth")
+
+model = SudokuHintNet()
+model.load_state_dict(torch.load("sudoku_hint_net.pth"))
+model.eval()
 
 # Функция для подсказки
 def get_hint(model, puzzle):

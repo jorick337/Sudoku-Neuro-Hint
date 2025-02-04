@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Game.Classes;
 using Game.Managers;
+using Game.AI;
 using Help.Classes;
 using Help.UI;
 using UnityEngine;
@@ -49,9 +50,14 @@ namespace Game.Panels
         [SerializeField] private Button notepadButton;
         [SerializeField] private Image notepadImage;
 
+        [Header("Neuro hint")]
+        [SerializeField] private Button neuroHintButton;
+        [SerializeField] private Image neuroHintImage;
+
         [Header("Managers")]
         [SerializeField] private GridManager gridManager;
         [SerializeField] private HintManager hintManager;
+        [SerializeField] private NeuroHintManager neuroHintManager;
 
         private AppSettingsManager _appSettingsManager;
 
@@ -97,6 +103,7 @@ namespace Game.Panels
             quickNotesImage.SetTransparency(TRANSPARENCY_ACTIVE);
             clearCellImage.SetTransparency(TRANSPARENCY_ACTIVE);
             comeBackImage.SetTransparency(TRANSPARENCY_ACTIVE);
+            neuroHintImage.SetTransparency(TRANSPARENCY_ACTIVE);
         }
 
         private void RegisterEvents(bool register)
@@ -110,6 +117,7 @@ namespace Game.Panels
                 hintButton.onClick.AddListener(GenerateHint);
                 notepadButton.onClick.AddListener(ToggleNotepadMode);
                 quickNotesButton.onClick.AddListener(PopulateQuickNotes);
+                neuroHintButton.onClick.AddListener(ShowNeuroHints);
 
                 appSettingsPanel.ChangingUseHints += UpdateHintActivity;
             }
@@ -122,6 +130,7 @@ namespace Game.Panels
                 hintButton.onClick.RemoveListener(GenerateHint);
                 notepadButton.onClick.RemoveListener(ToggleNotepadMode);
                 quickNotesButton.onClick.RemoveListener(PopulateQuickNotes);
+                neuroHintButton.onClick.RemoveListener(ShowNeuroHints);
 
                 appSettingsPanel.ChangingUseHints -= UpdateHintActivity;
             }
@@ -247,6 +256,22 @@ namespace Game.Panels
                 else
                     cellValueButtons[i].onClick.RemoveListener(buttonActions[i]);
             }
+        }
+
+        #endregion
+
+        #region NEURO HINT
+
+        private void ShowNeuroHints()
+        {
+            NeuroHint[] neuroHints = neuroHintManager.GenerateHints();
+
+            foreach (var neuroHint in neuroHints)
+            {
+                Debug.Log($"{neuroHint.Value} {neuroHint.Block} {neuroHint.Number} {neuroHint.Probability}");
+            }
+
+            
         }
 
         #endregion
