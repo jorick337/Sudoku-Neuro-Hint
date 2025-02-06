@@ -58,6 +58,7 @@ namespace Game.Panels
         [SerializeField] private GridManager gridManager;
         [SerializeField] private HintManager hintManager;
         [SerializeField] private NeuroHintManager neuroHintManager;
+        [SerializeField] private NeuroHintPanel neuroHintPanel;
 
         private AppSettingsManager _appSettingsManager;
 
@@ -264,14 +265,15 @@ namespace Game.Panels
 
         private void ShowNeuroHints()
         {
-            NeuroHint[] neuroHints = neuroHintManager.GenerateHints();
+            NeuroHint[] neuroHints = neuroHintManager.GenerateHints(1);
+
 
             foreach (var neuroHint in neuroHints)
             {
                 Debug.Log($"{neuroHint.Value} {neuroHint.Block} {neuroHint.Number} {neuroHint.Probability}");
             }
 
-            
+            neuroHintPanel.DisplayProbabilities(neuroHints);
         }
 
         #endregion

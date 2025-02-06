@@ -2,9 +2,9 @@ using UnityEngine;
 using Unity.Sentis;
 using Game.Managers;
 using System.Linq;
-using System.Globalization;
 using System;
-using Game.Classes;
+using System.Data;
+using System.Runtime.CompilerServices;
 
 namespace Game.AI
 {
@@ -13,7 +13,6 @@ namespace Game.AI
         #region CONSTANTS
 
         private const int SIZE_TENSOR = 81;
-        private const int AMOUNT_NEURO_HINTS = 4;
 
         #endregion
 
@@ -62,10 +61,10 @@ namespace Game.AI
 
         #region CORE LOGIC
 
-        public NeuroHint[] GenerateHints()
+        public NeuroHint[] GenerateHints(int Quantity)
         {
             CreateInputTensor();
-            NeuroHint[] neuroHints = CreateOutputTensor();
+            NeuroHint[] neuroHints = CreateOutputTensor(Quantity);
             ClearMemory();
 
             return neuroHints;
@@ -79,18 +78,18 @@ namespace Game.AI
             _inputTensor = new(_shape, puzzleFlattened);
         }
 
-        private NeuroHint[] CreateOutputTensor()
+        private NeuroHint[] CreateOutputTensor(int Quantity)
         {
             _worker.Schedule(_inputTensor);
 
-            NeuroHint[] neuroHints = new NeuroHint[AMOUNT_NEURO_HINTS];
-            for (int i = 0; i < AMOUNT_NEURO_HINTS; i++)
+            NeuroHint[] neuroHints = new NeuroHint[Quantity];
+            for (int i = 0; i < Quantity; i++)
             {
                 NeuroHint neuroHint;
 
                 do
                 {
-                    neuroHint = GetHintFromOutput();
+                    neuroHint = GetHintFromOutput(1);
                 }
                 while (neuroHints.Where(h => h != null).Any(hint => hint.Block == neuroHint.Block && hint.Number == neuroHint.Number));
 
@@ -140,31 +139,52 @@ namespace Game.AI
 
         #region GET
 
-        private NeuroHint GetHintFromOutput()
+        private NeuroHint GetHintFromOutput(int amount)
         {
             _outputTensor = _worker.PeekOutput() as Tensor<float>;
-            float[] outputArray = _outputTensor.DownloadToArray(); // (1,81,9) -> (729)
-
-            int[,] realGrid = gridManager.Sudoku.RealGrid;
+            float[,] output2DArray = Get2DFloatArray(_outputTensor.DownloadToArray()); // (1,81,9) -> (81,9)
 
             while (true)
             {
-                int randomIndex = UnityEngine.Random.Range(0, 81);
-                int block = randomIndex / 9;
-                int number = randomIndex % 9;
+                float maxValue = float.MinValue;
+                int cell = 0;
 
-                if (realGrid[block, number] != 0)
+                for (int i = 0; i < 81; i++)
                 {
-                    int row = (number+1)/3;   // Строка в блоке(6/3 = 2, то 2*81 = 162 - начало третьей строки блока)
-                    int col = block;
-                    float[] probabilities = outputArray.Skip(block*81).Take(9).ToArray();
-                    Debug.Log(probabilities.Sum());
-                    float maxProbabilities = probabilities.Max();
-                    int value = Array.IndexOf(probabilities, maxProbabilities) + 1;
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (output2DArray[i, j] > maxValue)
+                        {
+                            maxValue = output2DArray[i, j];
+                            cell = i;
+                        }
+                    }
+                }
 
-                    return new(value, block, number, maxProbabilities);
+                float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[cell, j]).ToArray();
+
+                int startBlockY = Math.Min(cell / 9 / 3 * 3, 6); // 0 3 6
+                int startBlockX = Math.Min(cell / 27, 2);        // 0 1 2
+                int block = startBlockY + startBlockX;           // 0 ... 8
+
+                int startNumberY = startBlockY % 3;
+                int startNumberX = Math.Max((27 * startBlockX - cell) / 9, 0);
+                int number = startNumberY + startNumberX;
+            }
+        }
+
+        private float[,] Get2DFloatArray(float[] grid1D)
+        {
+            float[,] grid2D = new float[81, 9];
+            for (int i = 0; i < 81; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    grid2D[i, j] = grid1D[i * 9 + j];
                 }
             }
+
+            return grid2D;
         }
 
         #endregion

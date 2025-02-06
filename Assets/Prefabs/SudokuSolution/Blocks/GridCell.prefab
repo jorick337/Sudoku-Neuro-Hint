@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5551617585476395041}
   - component: {fileID: 4961886483449941682}
   - component: {fileID: 3479955616339931301}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GridCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ GameObject:
   - component: {fileID: 1455071572546067819}
   - component: {fileID: 8698443028305571658}
   - component: {fileID: 359923303796221380}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
