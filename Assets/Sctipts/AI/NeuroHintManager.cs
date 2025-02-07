@@ -61,10 +61,10 @@ namespace Game.AI
 
         #region CORE LOGIC
 
-        public NeuroHint[] GenerateHints(int Quantity)
+        public NeuroHint[] GenerateHints(int Count)
         {
             CreateInputTensor();
-            NeuroHint[] neuroHints = CreateOutputTensor(Quantity);
+            NeuroHint[] neuroHints = CreateOutputTensor(Count);
             ClearMemory();
 
             return neuroHints;
@@ -78,18 +78,17 @@ namespace Game.AI
             _inputTensor = new(_shape, puzzleFlattened);
         }
 
-        private NeuroHint[] CreateOutputTensor(int Quantity)
+        private NeuroHint[] CreateOutputTensor(int Count)
         {
             _worker.Schedule(_inputTensor);
 
-            NeuroHint[] neuroHints = new NeuroHint[Quantity];
-            for (int i = 0; i < Quantity; i++)
+            NeuroHint[] neuroHints = new NeuroHint[Count];
+            for (int i = 0; i < Count; i++)
             {
                 NeuroHint neuroHint;
-
                 do
                 {
-                    neuroHint = GetHintFromOutput(1);
+                    neuroHint = GetHintFromOutput();
                 }
                 while (neuroHints.Where(h => h != null).Any(hint => hint.Block == neuroHint.Block && hint.Number == neuroHint.Number));
 
@@ -139,38 +138,32 @@ namespace Game.AI
 
         #region GET
 
-        private NeuroHint GetHintFromOutput(int amount)
+        private NeuroHint GetHintFromOutput()
         {
             _outputTensor = _worker.PeekOutput() as Tensor<float>;
-            float[,] output2DArray = Get2DFloatArray(_outputTensor.DownloadToArray()); // (1,81,9) -> (81,9)
+            float[,] output2DArray = Get2DFloatArray(_outputTensor.DownloadToArray());  // (1,81,9) -> (81,9)
+            int cell = 0;
 
-            while (true)
+            int[,] realGrid = gridManager.Sudoku.RealGrid;
+            int block = 0;
+            int number = 0;
+            while (realGrid[block, number] != 0)
             {
-                float maxValue = float.MinValue;
-                int cell = 0;
+                cell = UnityEngine.Random.Range(0, 81);
 
-                for (int i = 0; i < 81; i++)
-                {
-                    for (int j = 0; j < 9; j++)
-                    {
-                        if (output2DArray[i, j] > maxValue)
-                        {
-                            maxValue = output2DArray[i, j];
-                            cell = i;
-                        }
-                    }
-                }
+                int row = cell / 9;
+                int col = cell % 9;
 
-                float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[cell, j]).ToArray();
-
-                int startBlockY = Math.Min(cell / 9 / 3 * 3, 6); // 0 3 6
-                int startBlockX = Math.Min(cell / 27, 2);        // 0 1 2
-                int block = startBlockY + startBlockX;           // 0 ... 8
-
-                int startNumberY = startBlockY % 3;
-                int startNumberX = Math.Max((27 * startBlockX - cell) / 9, 0);
-                int number = startNumberY + startNumberX;
+                block = GetBlockByRowAndCol(row, col);
+                number = GetNumberByRowAndCol(row, col);
             }
+
+            float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[cell, j]).ToArray();
+            float maxProbability = probabilities.Max();
+
+            int value = Array.IndexOf(probabilities, maxProbability) + 1; // от 1 до 9
+
+            return new(value, block, number, maxProbability);
         }
 
         private float[,] Get2DFloatArray(float[] grid1D)
@@ -185,6 +178,22 @@ namespace Game.AI
             }
 
             return grid2D;
+        }
+
+        private int GetBlockByRowAndCol(int row, int col)
+        {
+            int startBlockY = row / 3 * 3;                  // 0, 3, 6
+            int startBlockX = col / 3;                      // 0, 1, 2
+
+            return startBlockY + startBlockX;          // от 0 до 8
+        }
+
+        private int GetNumberByRowAndCol(int row, int col)
+        {
+            int startNumberY = row % 3;                     // 0, 1, 2
+            int startNumberX = col % 3;                     // 0, 1, 2
+
+            return startNumberY * 3 + startNumberX;   // от 0 до 8
         }
 
         #endregion

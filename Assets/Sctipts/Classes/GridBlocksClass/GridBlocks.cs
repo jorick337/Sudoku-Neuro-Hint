@@ -13,9 +13,7 @@ namespace Game.Classes
         [SerializeField] private GridBlock[] gridBlocks;
 
         public GridBlock[] Blocks => gridBlocks;
-        public CellManager[] AllCellManagers => gridBlocks
-            .SelectMany(gridBlock => gridBlock.CellManagers)
-            .ToArray();
+        public CellManager[] AllCellManagers => gridBlocks.SelectMany(gridBlock => gridBlock.CellManagers).ToArray();
 
         public CellManager FocusedCellManager { get; private set; }
         public Stack<Movement> MovesHistory { get; private set; } // История всех действий с ячейками

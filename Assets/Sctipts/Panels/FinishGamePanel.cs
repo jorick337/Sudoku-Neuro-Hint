@@ -34,6 +34,7 @@ namespace Game.Panels
         [Header("Core")]
         [SerializeField] private Canvas newGamePanelCanvas;
         [SerializeField] private Image[] blockers;
+        [SerializeField] private NeuroHintPanel neuroHintPanel;
 
         [Header("Panel")]
         [SerializeField] private Canvas canvas;
@@ -120,6 +121,7 @@ namespace Game.Panels
         public void ActivatePanel(bool isActive)
         {
             canvas.SetSortingOrder(isActive ? ACTIVE_CANVAS_SORTING_ORDER : DEFAULT_CANVAS_SORTING_ORDER);
+            neuroHintPanel.Canvas.SetSortingOrder(DEFAULT_CANVAS_SORTING_ORDER);
 
             foreach (var image in blockers)
             {

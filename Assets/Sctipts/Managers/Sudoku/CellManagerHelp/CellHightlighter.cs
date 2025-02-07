@@ -68,9 +68,7 @@ namespace Game.Managers.Help
             SelectBlock(cellGroups);
             SelectByLineX(cellGroups);
             SelectByLineY(cellGroups);
-
-            if (!(cell.Value == 0))
-                SelectWithSameValues(cellGroups, cell.Value);
+            SelectWithSameValues(cellGroups, cell.Value);
 
             HighlightCell(cellManager, CellHighlightType.MainFocused);
         }
@@ -81,13 +79,16 @@ namespace Game.Managers.Help
         public void SelectByLineX(CellGroups cellGroups) => HighlightCells(cellGroups.LineX, CellHighlightType.Highlighted);
         public void SelectByLineY(CellGroups cellGroups) => HighlightCells(cellGroups.LineY, CellHighlightType.Highlighted);
 
-        private void SelectWithSameValues(CellGroups cellGroups, int value)
+        public void SelectWithSameValues(CellGroups cellGroups, int value)
         {
-            foreach (var cellManager in cellGroups.All)
+            if (value != 0)
             {
-                Cell cell = cellManager.Cell;
-                if (cell.Value == value)
-                    HighlightCell(cellManager, CellHighlightType.MinorFocused);
+                foreach (var cellManager in cellGroups.All)
+                {
+                    Cell cell = cellManager.Cell;
+                    if (cell.Value == value)
+                        HighlightCell(cellManager, CellHighlightType.MinorFocused);
+                }
             }
         }
 
@@ -96,7 +97,7 @@ namespace Game.Managers.Help
             foreach (var cellManager in cellManagers)
                 HighlightCell(cellManager, cellHighlightType);
         }
-        
+
         #endregion
     }
 }
