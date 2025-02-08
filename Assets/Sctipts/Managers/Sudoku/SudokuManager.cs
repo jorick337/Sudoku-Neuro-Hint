@@ -71,7 +71,7 @@ namespace Game.Managers
 
         private void Start()
         {
-            InstantiateGridBySize();
+            CreateGridInstance(grid3x3Prefab);
             GridUI.UpdateGameInfoPanel(this);
         }
 
@@ -160,30 +160,20 @@ namespace Game.Managers
 
         #region CORE LOGIC
 
-        private void InstantiateGridBySize()
-        {
-            switch (Sudoku.MainGrid.GetLength(0))
-            {
-                case 9:
-                    CreateGridInstance(grid3x3Prefab);
-                    break;
-            }
-        }
-
         private void CreateGridInstance(GameObject gridPrefab)
         {
             _selectedGrid = Instantiate(gridPrefab, grid.transform);
             GridBlocks = _selectedGrid.GetComponent<GridBlocks>();
 
-            StartCoroutine(DelayedUpdateColorTheme());
+            // StartCoroutine(DelayedUpdateColorTheme());
 
-            IEnumerator DelayedUpdateColorTheme()// Ожидаем 1 кадр, чтобы все процессы завершились
-            {
-                yield return null;
-                colorThemeManager.UpdateUIElementsAndColorTheme();
-            }
+            // IEnumerator DelayedUpdateColorTheme()// Ожидаем 1 кадр, чтобы все процессы завершились
+            // {
+            //     yield return null;
+            //     colorThemeManager.UpdateUIElementsAndColorTheme();
+            // }
 
-            // colorThemeManager.UpdateUIElementsAndColorTheme();
+            colorThemeManager.UpdateUIElementsAndColorTheme();
         }
 
         #endregion
@@ -210,7 +200,7 @@ namespace Game.Managers
         private void ResetGame()
         {
             DestroyImmediate(_selectedGrid);
-            InstantiateGridBySize();
+            CreateGridInstance(grid3x3Prefab);
             GridUI.UpdateGameInfoPanel(this);
         }
 

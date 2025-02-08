@@ -4,7 +4,7 @@ import random
 # Генерация полностью заполненной сетки судоку в виде одномерного массива, где
 # [0] - значения для строк блоков 1 2 3
 def generate_full_sudoku():
-    grid = np.zeros(81, dtype=int)  # Одномерный массив длиной 81
+    grid = np.zeros(81, dtype=int)
 
     def is_safe(num, row, col):
         if num in grid[row*9:(row+1)*9]:

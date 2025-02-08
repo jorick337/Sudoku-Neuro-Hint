@@ -116,7 +116,7 @@ namespace Game.Panels
             if (continueGameButton != null && continueGameText != null)
             {
                 bool hasUnfinishedSudoku = !_userManager.IsUnfinishedSudokuNull();
-                float transparency = hasUnfinishedSudoku ? 1f : 0.5f;
+                float transparency = hasUnfinishedSudoku ? 0.9f : 0.5f;
 
                 continueGameButton.SetTransparency(transparency);
                 continueGameText.SetTransparency(transparency);

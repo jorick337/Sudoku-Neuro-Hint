@@ -25,21 +25,17 @@ class SudokuHintNet(nn.Module):
         x = x.view(-1, 81, 9)  # Преобразуем в (batch_size, 81, 9)
         return x
 
-# Создание модели
 model = SudokuHintNet()
 
-# Генерация данных
 puzzles, solutions = gc.generate_valid_sudoku_data(num_samples=1000)
 
-# Преобразование данных в тензоры PyTorch
 puzzles_tensor = torch.tensor(puzzles, dtype=torch.float32)
 solutions_tensor = torch.tensor(solutions - 1, dtype=torch.long)  # Целевые значения (от 0 до 8)
 
-# Функция потерь и оптимизатор
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-# Обучение модели
+
 batch_size = 32
 num_epochs = 20
 
@@ -70,19 +66,22 @@ def get_hint(model, puzzle):
         puzzle_tensor = torch.tensor(puzzle, dtype=torch.float32).unsqueeze(0)
         output = model(puzzle_tensor)
         output = output.view(81, 9)
-        # Находим пустые ячейки
+        
         empty_cells = [i for i, val in enumerate(puzzle) if val == 0]
-        # Выбираем ячейку с наибольшей уверенностью
+        
         best_cell = empty_cells[torch.argmax(output[empty_cells].max(dim=1)[0]).item()]
         best_number = torch.argmax(output[best_cell]).item() + 1
     return best_cell, best_number
 
-# Тестирование на примере
+# Пример:
 puzzle, solution = gc.generate_valid_sudoku_data(num_samples=1)
+
 print("Puzzle:")
 print(puzzle[0].reshape(9, 9))
+
 cell, number = get_hint(model, puzzle[0])
 row, col = divmod(cell, 9)
 print(f"Hint: Put {number} in cell ({row}, {col})")
+
 print("Solution:")
 print(solution[0].reshape(9, 9))

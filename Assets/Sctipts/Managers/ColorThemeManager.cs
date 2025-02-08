@@ -15,6 +15,7 @@ namespace Game.Managers
         #region EVENTS
 
         public event Action ChangingColorTheme;
+        public event Action SelectFocusCell;
 
         #endregion
 
@@ -75,6 +76,7 @@ namespace Game.Managers
             ApplySudokuColors((ColorTheme)colorTheme);
 
             ChangingColorTheme?.Invoke();
+            SelectFocusCell?.Invoke();
         }
 
         private void ApplyGeneralColors(ColorTheme colorTheme)

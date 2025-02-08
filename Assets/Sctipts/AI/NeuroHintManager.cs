@@ -4,7 +4,6 @@ using Game.Managers;
 using System.Linq;
 using System;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace Game.AI
 {
@@ -67,33 +66,24 @@ namespace Game.AI
             NeuroHint[] neuroHints = CreateOutputTensor(Count);
             ClearMemory();
 
+            neuroHints = neuroHints.OrderByDescending(neuroHint => neuroHint.Probability).ToArray();
+
             return neuroHints;
         }
 
         private void CreateInputTensor()
         {
-            int[,] puzzle = gridManager.Sudoku.RealGrid;
-            float[] puzzleFlattened = FlattenGrid(puzzle);
+            float[] puzzleFlattened = FlattenGrid(gridManager.Sudoku.RealGrid);
 
             _inputTensor = new(_shape, puzzleFlattened);
         }
 
-        private NeuroHint[] CreateOutputTensor(int Count)
+        private NeuroHint[] CreateOutputTensor(int count)
         {
             _worker.Schedule(_inputTensor);
+            _outputTensor = _worker.PeekOutput() as Tensor<float>;
 
-            NeuroHint[] neuroHints = new NeuroHint[Count];
-            for (int i = 0; i < Count; i++)
-            {
-                NeuroHint neuroHint;
-                do
-                {
-                    neuroHint = GetHintFromOutput();
-                }
-                while (neuroHints.Where(h => h != null).Any(hint => hint.Block == neuroHint.Block && hint.Number == neuroHint.Number));
-
-                neuroHints[i] = neuroHint;
-            }
+            NeuroHint[] neuroHints = GetIndecesLargestValues(count);
 
             return neuroHints;
         }
@@ -138,32 +128,40 @@ namespace Game.AI
 
         #region GET
 
-        private NeuroHint GetHintFromOutput()
+        private NeuroHint[] GetIndecesLargestValues(int count)
         {
-            _outputTensor = _worker.PeekOutput() as Tensor<float>;
-            float[,] output2DArray = Get2DFloatArray(_outputTensor.DownloadToArray());  // (1,81,9) -> (81,9)
-            int cell = 0;
+            NeuroHint[] neuroHints = new NeuroHint[count];
 
-            int[,] realGrid = gridManager.Sudoku.RealGrid;
-            int block = 0;
-            int number = 0;
-            while (realGrid[block, number] != 0)
+            float[] output1DArray = _outputTensor.DownloadToArray();
+            float[] maxProbabilities = output1DArray.OrderByDescending(probability => probability).ToArray();
+
+            int i = 0;
+            foreach (var probability in maxProbabilities)
             {
-                cell = UnityEngine.Random.Range(0, 81);
+                int index = Array.IndexOf(output1DArray, probability) / 9;
 
-                int row = cell / 9;
-                int col = cell % 9;
+                int row = index / 9;
+                int col = index % 9;
 
-                block = GetBlockByRowAndCol(row, col);
-                number = GetNumberByRowAndCol(row, col);
+                int block = GetBlockByRowAndCol(row, col);
+                int number = GetNumberByRowAndCol(row, col);
+
+                if (gridManager.Sudoku.RealGrid[block, number] == 0)
+                {
+                    float[,] output2DArray = Get2DFloatArray(output1DArray);
+                    float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[index, j]).ToArray();
+
+                    int value = Array.IndexOf(probabilities, probability) + 1;
+
+                    neuroHints[i] = new NeuroHint(value, block, number, probability);
+                    i++;
+                }
+
+                if (i == count)
+                    break;
             }
 
-            float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[cell, j]).ToArray();
-            float maxProbability = probabilities.Max();
-
-            int value = Array.IndexOf(probabilities, maxProbability) + 1; // от 1 до 9
-
-            return new(value, block, number, maxProbability);
+            return neuroHints;
         }
 
         private float[,] Get2DFloatArray(float[] grid1D)

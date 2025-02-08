@@ -2158,8 +2158,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 537653568}
   - {fileID: 1430527663}
+  - {fileID: 537653568}
   m_Father: {fileID: 138429735}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -3472,6 +3472,7 @@ MonoBehaviour:
   - {fileID: 668813114}
   closePanelButton: {fileID: 537653571}
   gridManager: {fileID: 4983488786745718135}
+  colorThemeManager: {fileID: 1291826456}
 --- !u!1 &1083257691
 GameObject:
   m_ObjectHideFlags: 0

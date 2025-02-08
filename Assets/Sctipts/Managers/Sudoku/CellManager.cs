@@ -104,7 +104,7 @@ namespace Game.Managers
             }
             else
             {
-                _colorThemeManager.ChangingColorTheme -= UpdateColors;
+                _colorThemeManager.SelectFocusCell -= UpdateColors;
                 
                 if (OnValueChanged != null)
                 {
@@ -121,7 +121,7 @@ namespace Game.Managers
         {
             _gridManager.GridBlocks.SetFocusedCellManager(this);
             CellHightlighter.Select(this);
-            Invoke("RemoveFocus", 0.1f);
+            // Invoke("RemoveFocus", 0.1f);
         }
 
         private void RemoveFocus() => EventSystem.current.SetSelectedGameObject(null);

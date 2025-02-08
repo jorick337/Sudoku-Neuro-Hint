@@ -91,7 +91,7 @@ namespace Game.Managers.Help
             }
 
             gridManager.SetUpdateColors(UpdateColors);
-            ColorThemeManager.Instance.ChangingColorTheme += UpdateColors;
+            ColorThemeManager.Instance.SelectFocusCell += UpdateColors;
         }
 
         #endregion

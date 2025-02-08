@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Game.AI;
 using Game.Managers;
@@ -15,7 +16,7 @@ namespace Game.Panels
     {
         #region CONSTANTS
 
-        private const int ACTIVE_CANVAS = 3;
+        private const int ACTIVE_CANVAS = 4;
         private const int INACTIVE_CANVAS = 0;
 
         #endregion
@@ -44,6 +45,7 @@ namespace Game.Panels
 
         [Header("Managers")]
         [SerializeField] private GridManager gridManager;
+        [SerializeField] private ColorThemeManager colorThemeManager;
 
         private AppSettingsManager _appSettingsManager;
 
@@ -96,23 +98,35 @@ namespace Game.Panels
             {
                 closePanelButtonAction = () => Canvas.SetSortingOrder(INACTIVE_CANVAS);
                 closePanelButton.onClick.AddListener(closePanelButtonAction);
+
+                colorThemeManager.ChangingColorTheme += UpdateProbabilitiesColor;
             }
             else
             {
                 closePanelButton.onClick.RemoveListener(closePanelButtonAction);
-
-                for (int i = 0; i < probabilityButtons.Length; i++)
-                {
-                    probabilityButtons[i].onClick.RemoveListener(probabilityButtonActions[i]);
-                }
+                
+                colorThemeManager.ChangingColorTheme -= UpdateProbabilitiesColor;
             }
         }
 
-        private void RegisterProbabilityButtonsEvents(NeuroHint[] neuroHints = null)
+        private void RegisterProbabilityButtonsEvents(bool register, NeuroHint[] neuroHints = null)
         {
-            for (int i = 0; i < probabilityButtons.Length; i++)
+            if (register)
             {
-                AddProbabilityButtonListener(i, neuroHints[i]);
+                for (int i = 0; i < probabilityButtons.Length; i++)
+                {
+                    AddProbabilityButtonListener(i, neuroHints[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < probabilityButtons.Length; i++)
+                {
+                    if (probabilityButtonActions[i] != null)
+                    {
+                        probabilityButtons[i].onClick.RemoveListener(probabilityButtonActions[i]);
+                    }
+                }
             }
         }
 
@@ -128,7 +142,8 @@ namespace Game.Panels
             UpdateProbabilities(neuroHints);
 
             InitializeNeuroHints(neuroHints);
-            RegisterProbabilityButtonsEvents(neuroHints);
+            RegisterProbabilityButtonsEvents(false);
+            RegisterProbabilityButtonsEvents(true, neuroHints);
         }
 
         #endregion
@@ -140,16 +155,14 @@ namespace Game.Panels
             Color rightColor = _appSettingsManager.SelectedColorTheme.MainFocusedImageGridCell;
 
             SetImagesColor(rightColor);
-            SetImagesTransparency((float)0.9);
+            SetImagesTransparency(0.85f);
         }
 
         private void UpdateProbabilities(NeuroHint[] neuroHints)
         {
-            neuroHints = neuroHints.OrderByDescending(neuroHint => neuroHint.Probability).ToArray();
-
             for (int i = 0; i < neuroHints.Length; i++)
             {
-                probabilityTexts[i].text = $"{neuroHints[i].Value} - {System.Math.Round(neuroHints[i].Probability * 100, 1)} %";
+                probabilityTexts[i].text = $"{neuroHints[i].Value} - {Math.Round(neuroHints[i].Probability * 100, 1)} %";
             }
         }
 
@@ -170,7 +183,7 @@ namespace Game.Panels
             foreach (var image in probabilityImages)
             {
                 image.SetTransparency(value);
-                value = (float)(value - 0.1);
+                value -= 0.1f;
             }
         }
 
@@ -191,6 +204,8 @@ namespace Game.Panels
         private void FocusCellManager(CellManager cellManager, NeuroHint neuroHint)
         {
             EventSystem.current.SetSelectedGameObject(cellManager.gameObject);
+            Debug.Log("repeat");
+            Debug.Log(neuroHint.Value);
             cellManager.CellHightlighter.SelectWithSameValues(cellManager.Cell.CellGroups, neuroHint.Value);
         }
 
