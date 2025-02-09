@@ -76,7 +76,9 @@ def generate_valid_sudoku_data(num_samples=1000):
 
     for _ in range(num_samples):
         solution = generate_full_sudoku()
-        puzzle = remove_numbers(solution,36)
+        
+        rd = random.randint(36,52)
+        puzzle = remove_numbers(solution,rd)
         
         puzzles.append(puzzle)
         solutions.append(solution)

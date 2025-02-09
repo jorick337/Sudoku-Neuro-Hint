@@ -4,6 +4,7 @@ using Game.Managers;
 using System.Linq;
 using System;
 using System.Data;
+using Help.Classes;
 
 namespace Game.AI
 {
@@ -136,6 +137,7 @@ namespace Game.AI
             float[] maxProbabilities = output1DArray.OrderByDescending(probability => probability).ToArray();
 
             int i = 0;
+            bool isCorrect = false;
             foreach (var probability in maxProbabilities)
             {
                 int index = Array.IndexOf(output1DArray, probability) / 9;
@@ -151,9 +153,38 @@ namespace Game.AI
                     float[,] output2DArray = Get2DFloatArray(output1DArray);
                     float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[index, j]).ToArray();
 
-                    int value = Array.IndexOf(probabilities, probability) + 1;
+                    float maxProbability;
+                    int value;
 
-                    neuroHints[i] = new NeuroHint(value, block, number, probability);
+                    string s = "";
+                    foreach (var item in probabilities)
+                    {
+                        s += $"{item} ";
+                    }
+                    Debug.Log(s);
+
+                    int h = 0;
+                    do
+                    {
+                        maxProbability = probabilities.Max();
+                        index = Array.IndexOf(probabilities, maxProbability);
+                        probabilities[index] = -1;
+                        Debug.Log(index);
+                        Debug.Log(maxProbability);
+
+                        value = index + 1;
+
+                        if (gridManager.Sudoku.MainGrid[block, number] == value && isCorrect == false)
+                        {
+                            isCorrect = true;
+                            break;
+                        }
+
+                        h++;
+                    }
+                    while (gridManager.Sudoku.MainGrid[block,number] == value || h < 8);
+
+                    neuroHints[i] = new NeuroHint(value, maxProbability, block, number);
                     i++;
                 }
 
