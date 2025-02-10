@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using static Game.Managers.Help.GridAdd;
+using System.Linq;
 
 namespace Game.Panels
 {
@@ -267,7 +268,16 @@ namespace Game.Panels
         {
             NeuroHint[] neuroHints = neuroHintManager.GenerateHints(4);
 
-            neuroHintPanel.DisplayProbabilities(neuroHints);
+            if (neuroHints[3] == null)
+            {
+                neuroHintImage.SetTransparency(TRANSPARENCY_INACTIVE);
+            }
+            else
+            {
+                neuroHints = neuroHints.OrderByDescending(neuroHint => neuroHint.Probability).ToArray();
+
+                neuroHintPanel.DisplayProbabilities(neuroHints);
+            }
         }
 
         #endregion

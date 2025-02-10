@@ -61,13 +61,11 @@ namespace Game.AI
 
         #region CORE LOGIC
 
-        public NeuroHint[] GenerateHints(int Count)
+        public NeuroHint[] GenerateHints(int count)
         {
             CreateInputTensor();
-            NeuroHint[] neuroHints = CreateOutputTensor(Count);
+            NeuroHint[] neuroHints = CreateOutputTensor(count);
             ClearMemory();
-
-            neuroHints = neuroHints.OrderByDescending(neuroHint => neuroHint.Probability).ToArray();
 
             return neuroHints;
         }
@@ -127,17 +125,18 @@ namespace Game.AI
 
         #endregion
 
-        #region GET
+        #region FIND
 
         private NeuroHint[] GetIndecesLargestValues(int count)
         {
             NeuroHint[] neuroHints = new NeuroHint[count];
 
-            float[] output1DArray = _outputTensor.DownloadToArray();
+            float[] output1DArray = _outputTensor.DownloadToArray();    // чтобы найти наибольшую вероятность
+            float[,] output2DArray = Get2DFloatArray(output1DArray);    // чтобы удобнее искать блок и номер ячейки
+
             float[] maxProbabilities = output1DArray.OrderByDescending(probability => probability).ToArray();
 
             int i = 0;
-            bool isCorrect = false;
             foreach (var probability in maxProbabilities)
             {
                 int index = Array.IndexOf(output1DArray, probability) / 9;
@@ -150,42 +149,32 @@ namespace Game.AI
 
                 if (gridManager.Sudoku.RealGrid[block, number] == 0)
                 {
-                    float[,] output2DArray = Get2DFloatArray(output1DArray);
                     float[] probabilities = Enumerable.Range(0, 9).Select(j => output2DArray[index, j]).ToArray();
 
-                    float maxProbability;
-                    int value;
-
-                    string s = "";
-                    foreach (var item in probabilities)
+                    if (i == 0)
                     {
-                        s += $"{item} ";
-                    }
-                    Debug.Log(s);
+                        (int, float) correctProbability = FindNeuroHint(true, probabilities, block, number, 0.1f, neuroHints);
 
-                    int h = 0;
-                    do
-                    {
-                        maxProbability = probabilities.Max();
-                        index = Array.IndexOf(probabilities, maxProbability);
-                        probabilities[index] = -1;
-                        Debug.Log(index);
-                        Debug.Log(maxProbability);
-
-                        value = index + 1;
-
-                        if (gridManager.Sudoku.MainGrid[block, number] == value && isCorrect == false)
+                        if (correctProbability.Item1 == 0)
                         {
-                            isCorrect = true;
-                            break;
+                            continue;
                         }
 
-                        h++;
+                        neuroHints[i] = new NeuroHint(correctProbability.Item1, correctProbability.Item2, block, number);
+                        i++;
                     }
-                    while (gridManager.Sudoku.MainGrid[block,number] == value || h < 8);
+                    else
+                    {
+                        (int, float) incorrectProbability = FindNeuroHint(false, probabilities, block, number, 0.1f, neuroHints);
 
-                    neuroHints[i] = new NeuroHint(value, maxProbability, block, number);
-                    i++;
+                        if (incorrectProbability.Item1 == 0)
+                        {
+                            continue;
+                        }
+
+                        neuroHints[i] = new NeuroHint(incorrectProbability.Item1, incorrectProbability.Item2, block, number);
+                        i++;
+                    }
                 }
 
                 if (i == count)
@@ -194,6 +183,53 @@ namespace Game.AI
 
             return neuroHints;
         }
+
+        private (int, float) FindNeuroHint(bool isCorrectly, float[] probabilities, int block, int number, float minProbability, NeuroHint[] neuroHints)
+        {
+            float maxProbability;
+            int value;
+            int index;
+
+            do
+            {
+                maxProbability = probabilities.Max();
+
+                if (maxProbability > minProbability)
+                {
+                    index = Array.IndexOf(probabilities, maxProbability);
+                    value = index + 1;
+
+                    if (gridManager.Sudoku.MainGrid[block, number] == value == isCorrectly && gridManager.Sudoku.RealGrid.IsSafe(block, number, value))
+                    {
+                        if (neuroHints[0] != null)
+                        {
+                            if (!neuroHints.Any(neuroHint => neuroHint?.Block == block && neuroHint?.Number == number))
+                            {
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    value = 0;
+                    break;
+                }
+
+                probabilities[index] = -1;
+            }
+            while (true);
+
+            return (value, maxProbability);
+        }
+
+        #endregion
+
+        #region GET
 
         private float[,] Get2DFloatArray(float[] grid1D)
         {
