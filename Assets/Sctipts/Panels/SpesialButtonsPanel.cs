@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Game.Classes;
 using Game.Managers;
-using Game.AI;
 using Help.Classes;
 using Help.UI;
 using UnityEngine;

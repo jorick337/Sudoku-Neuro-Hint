@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#Author: yurin
+#Sudoku-New.exe
+#Rating=1-5
+export PW_VULKAN_USE="2"
+export PW_WINE_USE="PROTON_LG_9-19"
+export PW_PREFIX_NAME="DEFAULT"
+export PORTPROTON_NAME="Sudoku-New"
+export FILE_DESCRIPTION=""
+export FILE_SHA256SUM="ea6764f26a67877f875d25f1c8eb6e27c2b2b4e6a8daabd6f35c80d2eb85c038"

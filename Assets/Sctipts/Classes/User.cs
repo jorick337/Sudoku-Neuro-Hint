@@ -12,12 +12,5 @@ namespace Game.Classes
         {
             Username = username;
         }
-
-        public User(User user)
-        {
-            Username = user.Username;
-            Records = new List<Record>(user.Records);
-            UnfinishedSudoku = user.UnfinishedSudoku;
-        }
     }
 }

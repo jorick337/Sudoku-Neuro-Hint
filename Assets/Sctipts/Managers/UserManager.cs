@@ -83,6 +83,11 @@ namespace Game.Managers
                     }
                 }
             }
+            else
+            {
+                AddUser(User);
+                saveManager.SaveUsers(Users);   // Если нет сохраненых пользователей, то создать новый файл с ними
+            }
         }
 
         #endregion

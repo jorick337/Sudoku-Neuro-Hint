@@ -1,13 +1,10 @@
 using System;
-using System.Linq;
-using Game.AI;
+using Game.Classes;
 using Game.Managers;
 using Help.UI;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace Game.Panels
@@ -104,7 +101,7 @@ namespace Game.Panels
             else
             {
                 closePanelButton.onClick.RemoveListener(closePanelButtonAction);
-                
+
                 colorThemeManager.ChangingColorTheme -= UpdateProbabilitiesColor;
             }
         }
@@ -204,8 +201,6 @@ namespace Game.Panels
         private void FocusCellManager(CellManager cellManager, NeuroHint neuroHint)
         {
             EventSystem.current.SetSelectedGameObject(cellManager.gameObject);
-            Debug.Log("repeat");
-            Debug.Log(neuroHint.Value);
             cellManager.CellHightlighter.SelectWithSameValues(cellManager.Cell.CellGroups, neuroHint.Value);
         }
 

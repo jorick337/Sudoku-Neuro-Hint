@@ -1,6 +1,5 @@
 using Unity.Mathematics;
 using Help.Classes;
-using UnityEngine;
 
 namespace Game.Classes
 {
