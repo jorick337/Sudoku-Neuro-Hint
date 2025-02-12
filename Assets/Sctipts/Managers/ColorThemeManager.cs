@@ -41,7 +41,7 @@ namespace Game.Managers
 
         private void Start()
         {
-            if (updateColorsHere) 
+            if (updateColorsHere)
             {
                 UpdateUIElementsAndColorTheme();
             }
@@ -74,6 +74,7 @@ namespace Game.Managers
             ApplyButtonColors((ColorTheme)colorTheme);
             ApplyOutlineColors((ColorTheme)colorTheme);
             ApplySudokuColors((ColorTheme)colorTheme);
+            ApplyBlockersColors((ColorTheme)colorTheme);
 
             ChangingColorTheme?.Invoke();
             SelectFocusCell?.Invoke();
@@ -81,10 +82,8 @@ namespace Game.Managers
 
         private void ApplyGeneralColors(ColorTheme colorTheme)
         {
-            ApplyColorsToElements(sceneController.UITextElements, text =>
-                text.color = colorTheme.Text);
-            ApplyColorsToElements(sceneController.UIImageElements, image =>
-                image.color = colorTheme.Background);
+            ApplyColorsToElements(sceneController.UITextElements, text => text.color = colorTheme.Text);
+            ApplyColorsToElements(sceneController.UIImageElements, image => image.color = colorTheme.Background);
         }
 
         private void ApplyButtonColors(ColorTheme colorTheme)
@@ -98,15 +97,19 @@ namespace Game.Managers
                 button.colors = colors;
             });
 
-            ApplyColorsToElements(sceneController.ButtonTexts, text =>
-                text.color = colorTheme.TextButton);
-            ApplyColorsToElements(sceneController.ButtonImages, image =>
-                image.color = colorTheme.BackGroundButton);
+            ApplyColorsToElements(sceneController.ButtonTexts, text => text.color = colorTheme.TextButton);
+            ApplyColorsToElements(sceneController.ButtonImages, image => image.color = colorTheme.BackGroundButton);
         }
 
         private void ApplyOutlineColors(ColorTheme colorTheme) =>
-            ApplyColorsToElements(sceneController.Outlines, outline =>
-                outline.effectColor = colorTheme.EffectColorOutline);
+            ApplyColorsToElements(sceneController.Outlines, outline => outline.effectColor = colorTheme.EffectColorOutline);
+
+        private void ApplyBlockersColors(ColorTheme colorTheme)
+        {
+            Color blockerColor = colorTheme.Background;
+            blockerColor.a = 0.003f;
+            ApplyColorsToElements(sceneController.Blockers, blocker => blocker.color = blockerColor);
+        }
 
         private void ApplySudokuColors(ColorTheme colorTheme)
         {
@@ -114,8 +117,7 @@ namespace Game.Managers
                 sceneController.SudokuGridBackground.color =
                     colorTheme.BackGroundImageGrid;
 
-            ApplyColorsToElements(sceneController.GridBlockHighlightImages, image =>
-                image.color = colorTheme.SelectionImageGridBlock);
+            ApplyColorsToElements(sceneController.GridBlockHighlightImages, image => image.color = colorTheme.SelectionImageGridBlock);
         }
 
         private void ApplyColorsToElements<T>(T[] elements, Action<T> applyColor)

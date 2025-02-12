@@ -17,6 +17,7 @@ namespace Game.Managers
         public Image[] ButtonImages { get; private set; }
         
         public Outline[] Outlines { get; private set; }
+        public Image[] Blockers { get; private set; }
 
         public Image SudokuGridBackground { get; private set; }
         public Image[] GridBlockHighlightImages { get; private set; }
@@ -44,7 +45,9 @@ namespace Game.Managers
             Buttons = GetUIComponents<Button>("Buttons");
             ButtonTexts = GetUIComponents<Text>("Buttons");
             ButtonImages = GetUIComponents<Image>("Buttons");
+
             Outlines = FindObjectsOfType<Outline>();
+            Blockers = GetUIComponents<Image>("Blocker");
 
             SudokuGridBackground = GetUIComponents<Image>("Sudoku")?.FirstOrDefault();
             GridBlockHighlightImages = GetUIComponents<Image>("GridBlock");

@@ -35,11 +35,6 @@ namespace Game.Classes
             AddScoreForCorrectFilling = value != 0; // Если имеет значение с самого начала то не может получить очки за корректное получение
         }
 
-        public Cell(Cell cell, int? value = null)
-        {
-            Value = (int)(value == null ? cell.Value : value);
-        }
-
         #endregion
 
         #region SET

@@ -13,7 +13,7 @@ namespace Game.Panels
     {
         #region CONSTANTS
 
-        private const int ACTIVE_CANVAS = 4;
+        private const int ACTIVE_CANVAS = 2;
         private const int INACTIVE_CANVAS = 0;
 
         #endregion

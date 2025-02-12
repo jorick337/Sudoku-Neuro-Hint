@@ -15,7 +15,7 @@ namespace Game.Panels
     {
         #region CONSTANTS
 
-        private const float TRANSPARENCY_ACTIVE = 0.65f;
+        private const float TRANSPARENCY_ACTIVE = 0.7f;
         private const float TRANSPARENCY_INACTIVE = 0.35f;
 
         #endregion
@@ -30,6 +30,7 @@ namespace Game.Panels
 
         [Header("Core")]
         [SerializeField] private AppSettingsPanel appSettingsPanel;
+        [SerializeField] private NeuroHintPanel neuroHintPanel;
         [SerializeField] private Button[] cellValueButtons = new Button[9]; // Кнопок всего девять
 
         [Header("Come back")]
@@ -58,7 +59,6 @@ namespace Game.Panels
         [SerializeField] private GridManager gridManager;
         [SerializeField] private HintManager hintManager;
         [SerializeField] private NeuroHintManager neuroHintManager;
-        [SerializeField] private NeuroHintPanel neuroHintPanel;
 
         private AppSettingsManager _appSettingsManager;
 
@@ -177,12 +177,7 @@ namespace Game.Panels
 
         private void ClearFocusedCell()
         {
-            CellManager focusedCellManager = gridManager.GridBlocks.FocusedCellManager;
-            if (focusedCellManager.Cell.Value != 0 && !focusedCellManager.Cell.AddScoreForCorrectFilling)
-            {
-                focusedCellManager.CellAdd.AddValueWithoutMoveAndChecks(focusedCellManager, 0);
-                gridManager.GridAdd.AddScoreByScoreType(gridManager, ScoreType.RevertMove);
-            }
+            gridManager.OnDeleteButtonPressed.Invoke();
         }
 
         #endregion

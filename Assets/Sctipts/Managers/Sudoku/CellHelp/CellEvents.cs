@@ -1,7 +1,10 @@
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using Game.Classes;
 using Help.Classes;
 using Help.UI;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +24,9 @@ namespace Game.Managers.Help
 
                     cellManager.Cell.SetValue(value);
                     cellManager.SetTextDirectly(value.ToString());
+
                     cellManager.CellAdd.UpdateCellState(cellManager, false);
+                    UpdateNotepadValuesColorsForAll(cellManager);
                 }
             }
 
@@ -42,7 +47,7 @@ namespace Game.Managers.Help
                     cellManager.Cell.NotepadValues.Add(value);
                 }
 
-                cellManager.SetTextDirectly(GetNotepadText(cellManager.Cell));
+                UpdateNotepadValuesColorsForAll(cellManager);
             }
 
             cellManager.SetOnValueChanged(onValueChanged);
@@ -58,6 +63,7 @@ namespace Game.Managers.Help
             {
                 cellManager.Cell.SetCellColors(new(AppSettingsManager.Instance.SelectedColorTheme));
                 cellManager.CellHightlighter.HighlightCell(cellManager, CellHightlighter.CellHighlightType.Unselected);
+                UpdateNotepadValuesColor(cellManager);
 
                 if (cellManager.InputField.readOnly)
                 {
@@ -71,6 +77,27 @@ namespace Game.Managers.Help
 
             cellManager.SetUpdateColors(UpdateColors);
             ColorThemeManager.Instance.ChangingColorTheme += UpdateColors;
+        }
+
+        public void UpdateNotepadValuesColorsForAll(CellManager cellManager)
+        {
+            CellManager[] cellManagers = cellManager.Cell.CellGroups.Block
+                .Concat(cellManager.Cell.CellGroups.LineX)
+                .Concat(cellManager.Cell.CellGroups.LineY)
+                .ToArray();
+
+            foreach (var cell in cellManagers)
+            {
+                UpdateNotepadValuesColor(cell);
+            }
+        }
+
+        private void UpdateNotepadValuesColor(CellManager cellManager)
+        {
+            if (cellManager.Cell.NotepadValues.Count > 0 && cellManager.Cell.Value == 0)    // Проверка на наличие заметок
+            {
+                cellManager.SetTextDirectly(GetNotepadText(cellManager.Cell));
+            }
         }
 
         #endregion
@@ -98,8 +125,8 @@ namespace Game.Managers.Help
             {
                 string value = cell.NotepadValues.Contains(i.ToString()) ? i.ToString() : "   ";
                 string colorizedValue = sudoku.RealGrid.IsSafe(cell.Block, cell.Number, i)
-                    ? $"<color=#{ColorUtility.ToHtmlStringRGBA(cell.CellColors.RightText)}>{value}</color>"
-                    : $"<color=#{ColorUtility.ToHtmlStringRGBA(cell.CellColors.WrongText)}>{value}</color>";
+                    ? $"<color=#{UnityEngine.ColorUtility.ToHtmlStringRGBA(cell.CellColors.RightText)}>{value}</color>"
+                    : $"<color=#{UnityEngine.ColorUtility.ToHtmlStringRGBA(cell.CellColors.WrongText)}>{value}</color>";
 
                 result.Append(colorizedValue);
                 result.Append(i % 3 == 0 ? "\n" : "  ");

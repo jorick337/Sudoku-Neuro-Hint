@@ -21,8 +21,8 @@ namespace Game.Managers
 
         public Action UpdateColors;
 
+        public Action OnDeleteButtonPressed;
         private Action OnNumberButtonPressed;
-        private Action OnDeleteButtonPressed;
 
         private Action PauseGame;
         private Action UnpauseGame;

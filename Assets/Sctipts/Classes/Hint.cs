@@ -100,7 +100,6 @@ namespace Game.Classes
                     int value = Enumerable.Range(1, 9)
                     .Except(allNonRepeatingCellManagers.Select(cellManager => cellManager.Cell.Value))
                     .FirstOrDefault();
-                    Debug.Log(value);
 
                     Cell cell = emptyCellManager.Cell;
                     bool highlightLineX = allNonRepeatingCellManagers.Any(cellManager => cellManager.Cell.Block % 3 != cell.Block % 3);

@@ -33,10 +33,15 @@ namespace Game.Managers.Help
                     return;
 
                 cell.SetValue(0);
-                cellManager.SetTextDirectly("");
+                cell.SetNotePadValues(new());
 
                 gridManager.Sudoku.SetValueRealGrid(cell);
                 gridManager.GridAdd.AddDeletedMove(gridManager, cell);
+                
+                cellManager.CellHightlighter.Select(cellManager);
+
+                cellManager.CellEvents.UpdateNotepadValuesColorsForAll(cellManager);
+                cellManager.SetTextDirectly("");
             }
 
             gridManager.SetOnDeleteButtonPressed(OnDeleteButtonPressed);
