@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2122242955051910046}
   - component: {fileID: 2602527995208400671}
   - component: {fileID: 4670569105102006125}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1093,7 +1093,7 @@ GameObject:
   - component: {fileID: 4287378073223410134}
   - component: {fileID: 2029681727498924039}
   - component: {fileID: 4867161417559535907}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1442,7 +1442,7 @@ GameObject:
   - component: {fileID: 7022996725137548267}
   - component: {fileID: 6765427409601290083}
   - component: {fileID: 7005463445872999614}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1733,7 +1733,7 @@ GameObject:
   - component: {fileID: 759547636794945564}
   - component: {fileID: 7707214953240237243}
   - component: {fileID: 1009277749669239688}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1960,7 +1960,7 @@ GameObject:
   - component: {fileID: 3226801329560882085}
   - component: {fileID: 7403684802085891678}
   - component: {fileID: 8225849557509495380}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2969,7 +2969,7 @@ GameObject:
   - component: {fileID: 596427915579338432}
   - component: {fileID: 6121653521240838561}
   - component: {fileID: 3201299692978158591}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3220,6 +3220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   appSettingsPanel: {fileID: 0}
+  neuroHintPanel: {fileID: 0}
   cellValueButtons:
   - {fileID: 9150281305356577033}
   - {fileID: 1333151740976695590}

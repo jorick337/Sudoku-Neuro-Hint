@@ -114,8 +114,11 @@ namespace Game.Managers
         private void ApplySudokuColors(ColorTheme colorTheme)
         {
             if (sceneController.SudokuGridBackground != null)
-                sceneController.SudokuGridBackground.color =
-                    colorTheme.BackGroundImageGrid;
+            {
+                Debug.Log(sceneController.SudokuGridBackground == null);
+                Debug.Log(colorTheme.BackGroundImageGrid);
+                sceneController.SudokuGridBackground.color = colorTheme.BackGroundImageGrid;
+            }
 
             ApplyColorsToElements(sceneController.GridBlockHighlightImages, image => image.color = colorTheme.SelectionImageGridBlock);
         }

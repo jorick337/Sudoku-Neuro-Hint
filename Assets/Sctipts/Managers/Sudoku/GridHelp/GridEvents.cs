@@ -29,7 +29,7 @@ namespace Game.Managers.Help
                 CellManager cellManager = gridManager.GridBlocks.FocusedCellManager;
                 Cell cell = cellManager.Cell;
 
-                if (cellManager == null)
+                if (cellManager == null || cellManager.InputField.readOnly)
                     return;
 
                 cell.SetValue(0);

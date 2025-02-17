@@ -46,10 +46,12 @@ namespace Game.Managers
             ButtonTexts = GetUIComponents<Text>("Buttons");
             ButtonImages = GetUIComponents<Image>("Buttons");
 
-            Outlines = FindObjectsOfType<Outline>();
+            Outlines = FindObjectsByType<Outline>(FindObjectsSortMode.None);
             Blockers = GetUIComponents<Image>("Blocker");
 
+            Debug.Log(SudokuGridBackground == null);
             SudokuGridBackground = GetUIComponents<Image>("Sudoku")?.FirstOrDefault();
+            Debug.Log(SudokuGridBackground == null);
             GridBlockHighlightImages = GetUIComponents<Image>("GridBlock");
         }
         
@@ -93,7 +95,7 @@ namespace Game.Managers
                 return new T[0];
             }
 
-            return FindObjectsOfType<T>().Where(obj => obj.gameObject.layer == layer).ToArray();
+            return FindObjectsByType<T>(FindObjectsSortMode.None).Where(obj => obj.gameObject.layer == layer).ToArray();
         }
 
         #endregion
