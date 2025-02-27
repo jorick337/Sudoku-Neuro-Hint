@@ -1,7 +1,7 @@
 # Sudoku
 
 <p align="center">
-   <img src="https://github.com/jorick337/Sudoku/MinorFiles/Images(my)/Gameplay.gif">
+   <img src="https://github.com/jorick337/Sudoku/blob/main/MinorFiles/Images(my)/Gameplay.gif">
 </p>
 
 ## Об игре
