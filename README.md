@@ -4,6 +4,13 @@
    <img src="https://github.com/jorick337/Sudoku/blob/main/MinorFiles/Images(my)/Gameplay.gif">
 </p>
 
+<p align="center">
+   <img src="https://img.shields.io/badge/Engine-Unity%206000.0.38f1-blueviolet?style=&logo=unity" alt="Engine">
+   <img src="https://img.shields.io/badge/Platform-Windows, Linux, MacOs %20-brightgreen?style=&logo=android" alt="Platform">
+   <img src="https://img.shields.io/badge/Version-1.0.1-blue" alt="Game Version">
+   <img src="https://img.shields.io/badge/Release Date-17.02.2025-red" alt="Release Date">
+</p>
+
 ## Об игре
 
 **Sudoku** это классическое приложение-судоку с добавлением искусственного интеллекта, который дает новый игровой опыт игроку. Игра предназначена для обучения.
