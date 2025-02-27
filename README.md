@@ -1,5 +1,9 @@
 # Sudoku
 
+<p align="center">
+   <img src="https://github.com/jorick337/Sudoku/MinorFiles/Images(my)/Gameplay.gif">
+</p>
+
 ## Об игре
 
 **Sudoku** это классическое приложение-судоку с добавлением искусственного интеллекта, который дает новый игровой опыт игроку. Игра предназначена для обучения.
